@@ -1,0 +1,19 @@
+name: Lint
+
+on:
+  - push
+  - pull_request
+
+jobs:
+  eslint:
+    name: Run eslint and prettier
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install packages
+        run: npm ci
+
+      - name: Run linter
+        run: npm run lint
