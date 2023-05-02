@@ -37,7 +37,7 @@
     "typescript": "^5.0.4"
   },
   "prettier": {
-    "printWidth": 100,
+    "printWidth": 80,
     "tabWidth": 2,
     "endOfLine": "lf",
     "semi": true,
@@ -52,6 +52,9 @@
     "parser": "@typescript-eslint/parser",
     "plugins": [
       "@typescript-eslint"
-    ]
+    ],
+    "rules": {
+      "no-console": "warn"
+    }
   }
 }
