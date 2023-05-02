@@ -1,19 +1,14 @@
 import logger from "./config/logger";
 import {
-  ChatInputCommandInteraction,
   Collection,
   REST,
-  RESTPostAPIChatInputApplicationCommandsJSONBody,
+  type RESTPostAPIChatInputApplicationCommandsJSONBody,
   Routes,
   SlashCommandBuilder,
 } from "discord.js";
 import fs from "fs";
 import path from "path";
-
-type Command = {
-  data: SlashCommandBuilder;
-  execute: (interaction: ChatInputCommandInteraction) => Promise<void>;
-};
+import type { Command } from "./config/client";
 
 /**
  * Automatically loads all commands from the commands folder.
