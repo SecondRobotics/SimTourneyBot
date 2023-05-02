@@ -15,6 +15,11 @@ type Command = {
   execute: (interaction: ChatInputCommandInteraction) => Promise<void>;
 };
 
+/**
+ * Automatically loads all commands from the commands folder.
+ * All commands must be in the form of a `.ts` module with a `data` and `execute` property.
+ * @returns A collection of commands.
+ */
 export const getCommands = () => {
   const commands: Collection<string, Command> = new Collection();
 
@@ -43,6 +48,10 @@ export const getCommands = () => {
   return commands;
 };
 
+/**
+ * Registers all commands with Discord.
+ * @param commands A list of commands to register with Discord.
+ */
 export const registerCommands = async (
   commands: RESTPostAPIChatInputApplicationCommandsJSONBody[]
 ) => {
