@@ -1,5 +1,5 @@
 import { Events, type Interaction } from "discord.js";
-import logger from "src/config/logger";
+import logger from "../config/logger";
 
 export const name = Events.InteractionCreate;
 export const once = false;
