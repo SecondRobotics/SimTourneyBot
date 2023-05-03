@@ -22,15 +22,12 @@ export interface Match {
   redEnd: number;
   blueEnd: number;
 
-  red1Contribution: number;
-  red2Contribution: number;
-  red3Contribution: number;
-  blue1Contribution: number;
-  blue2Contribution: number;
-  blue3Contribution: number;
-
-  redCargo: number;
-  blueCargo: number;
+  redLinks: number;
+  blueLinks: number;
+  redChargeStation: number;
+  blueChargeStation: number;
+  redGamePieces: number;
+  blueGamePieces: number;
 
   redRP: number;
   blueRP: number;
@@ -59,14 +56,12 @@ export function matchToArray(match: Match) {
     match.blueTeleop,
     match.redEnd,
     match.blueEnd,
-    match.red1Contribution,
-    match.red2Contribution,
-    match.red3Contribution,
-    match.blue1Contribution,
-    match.blue2Contribution,
-    match.blue3Contribution,
-    match.redCargo,
-    match.blueCargo,
+    match.redLinks,
+    match.blueLinks,
+    match.redChargeStation,
+    match.blueChargeStation,
+    match.redGamePieces,
+    match.blueGamePieces,
     match.redRP,
     match.blueRP,
     match.redTiebreaker,
@@ -94,14 +89,12 @@ export const headerValues = [
   "Blue Teleop",
   "Red End",
   "Blue End",
-  "Red 1 Contribution",
-  "Red 2 Contribution",
-  "Red 3 Contribution",
-  "Blue 1 Contribution",
-  "Blue 2 Contribution",
-  "Blue 3 Contribution",
-  "Red Cargo",
-  "Blue Cargo",
+  "Red Links",
+  "Blue Links",
+  "Red Charge Station",
+  "Blue Charge Station",
+  "Red Game Pieces",
+  "Blue Game Pieces",
   "Red RP",
   "Blue RP",
   "Red Tiebreaker",
@@ -128,14 +121,12 @@ export function saveMatchToRow(match: Match, row: GoogleSpreadsheetRow) {
   row["Blue Teleop"] = match.blueTeleop;
   row["Red End"] = match.redEnd;
   row["Blue End"] = match.blueEnd;
-  row["Red 1 Contribution"] = match.red1Contribution;
-  row["Red 2 Contribution"] = match.red2Contribution;
-  row["Red 3 Contribution"] = match.red3Contribution;
-  row["Blue 1 Contribution"] = match.blue1Contribution;
-  row["Blue 2 Contribution"] = match.blue2Contribution;
-  row["Blue 3 Contribution"] = match.blue3Contribution;
-  row["Red Cargo"] = match.redCargo;
-  row["Blue Cargo"] = match.blueCargo;
+  row["Red Links"] = match.redLinks;
+  row["Blue Links"] = match.blueLinks;
+  row["Red Charge Station"] = match.redChargeStation;
+  row["Blue Charge Station"] = match.blueChargeStation;
+  row["Red Game Pieces"] = match.redGamePieces;
+  row["Blue Game Pieces"] = match.blueGamePieces;
   row["Red RP"] = match.redRP;
   row["Blue RP"] = match.blueRP;
   row["Red Tiebreaker"] = match.redTiebreaker;

@@ -3,8 +3,8 @@ import type { GoogleSpreadsheetWorksheet } from "google-spreadsheet";
 import { getMatch } from "./googleSheet";
 import type { Match } from "./match";
 
-const CARGO_BONUS_RP = 60;
-const ENDGAME_BONUS_RP = 22;
+const SUSTAINABILITY_BONUS_RP = 7;
+const ACTIVATION_BONUS_RP = 32;
 
 export async function getMatchData(
   scheduleSheet: GoogleSpreadsheetWorksheet,
@@ -15,7 +15,7 @@ export async function getMatchData(
     throw new Error(`Data directory ${dataDirectory} does not exist`);
   }
 
-  if (!fs.existsSync(`${dataDirectory}/ScoreR.txt`)) {
+  if (!fs.existsSync(`${dataDirectory}/Score_R.txt`)) {
     throw new Error(
       `Data directory ${dataDirectory} is not populated with data`
     );
@@ -35,68 +35,96 @@ export async function getMatchData(
     scheduledMatch["Blue 3"],
   ];
 
-  // Sort player contributions (OPR)
-  const redAlphabetized = redAlliance.slice().sort();
-  const blueAlphabetized = blueAlliance.slice().sort();
+  // // Sort player contributions (OPR)
+  // const redAlphabetized = redAlliance.slice().sort();
+  // const blueAlphabetized = blueAlliance.slice().sort();
 
-  const contribAlphabetized = fs
-    .readFileSync(`${dataDirectory}/OPR.txt`, "utf8")
-    .split("\n")
-    .map((line) => line.split(": ")[1]);
-  const unsortedContribRed = contribAlphabetized.slice(0, 3);
-  const unsortedContribBlue = contribAlphabetized.slice(3, 6);
-  const contribRed = unsortedContribRed.slice();
-  const contribBlue = unsortedContribBlue.slice();
+  // const contribAlphabetized = fs
+  //   .readFileSync(`${dataDirectory}/OPR.txt`, "utf8")
+  //   .split("\n")
+  //   .map((line) => line.split(": ")[1]);
+  // const unsortedContribRed = contribAlphabetized.slice(0, 3);
+  // const unsortedContribBlue = contribAlphabetized.slice(3, 6);
+  // const contribRed = unsortedContribRed.slice();
+  // const contribBlue = unsortedContribBlue.slice();
 
-  for (let i = 0; i < 3; i++) {
-    const redIndex = redAlliance.indexOf(redAlphabetized[i]);
-    const blueIndex = blueAlliance.indexOf(blueAlphabetized[i]);
-    contribRed[redIndex] = unsortedContribRed[i];
-    contribBlue[blueIndex] = unsortedContribBlue[i];
-  }
+  // for (let i = 0; i < 3; i++) {
+  //   const redIndex = redAlliance.indexOf(redAlphabetized[i]);
+  //   const blueIndex = blueAlliance.indexOf(blueAlphabetized[i]);
+  //   contribRed[redIndex] = unsortedContribRed[i];
+  //   contribBlue[blueIndex] = unsortedContribBlue[i];
+  // }
 
-  // Count cargo
-  const cargoRed =
-    parseInt(fs.readFileSync(`${dataDirectory}/C_H_R.txt`, "utf8")) +
-    parseInt(fs.readFileSync(`${dataDirectory}/C_L_R.txt`, "utf8")) +
-    parseInt(fs.readFileSync(`${dataDirectory}/Auto_C_H_R.txt`, "utf8")) +
-    parseInt(fs.readFileSync(`${dataDirectory}/Auto_C_L_R.txt`, "utf8"));
-  const cargoBlue =
-    parseInt(fs.readFileSync(`${dataDirectory}/C_H_B.txt`, "utf8")) +
-    parseInt(fs.readFileSync(`${dataDirectory}/C_L_B.txt`, "utf8")) +
-    parseInt(fs.readFileSync(`${dataDirectory}/Auto_C_H_B.txt`, "utf8")) +
-    parseInt(fs.readFileSync(`${dataDirectory}/Auto_C_L_B.txt`, "utf8"));
+  // Count game pieces
+  const piecesRed =
+    parseInt(fs.readFileSync(`${dataDirectory}/ABotC_R.txt`, "utf8")) +
+    parseInt(fs.readFileSync(`${dataDirectory}/AMidC_R.txt`, "utf8")) +
+    parseInt(fs.readFileSync(`${dataDirectory}/ATopC_R.txt`, "utf8")) +
+    parseInt(fs.readFileSync(`${dataDirectory}/TBotC_R.txt`, "utf8")) +
+    parseInt(fs.readFileSync(`${dataDirectory}/TMidC_R.txt`, "utf8")) +
+    parseInt(fs.readFileSync(`${dataDirectory}/TTopC_R.txt`, "utf8"));
+  const piecesBlue =
+    parseInt(fs.readFileSync(`${dataDirectory}/ABotC_B.txt`, "utf8")) +
+    parseInt(fs.readFileSync(`${dataDirectory}/AMidC_B.txt`, "utf8")) +
+    parseInt(fs.readFileSync(`${dataDirectory}/ATopC_B.txt`, "utf8")) +
+    parseInt(fs.readFileSync(`${dataDirectory}/TBotC_B.txt`, "utf8")) +
+    parseInt(fs.readFileSync(`${dataDirectory}/TMidC_B.txt`, "utf8")) +
+    parseInt(fs.readFileSync(`${dataDirectory}/TTopC_B.txt`, "utf8"));
+
+  // Calculate endgame points
+  const endRed =
+    parseInt(fs.readFileSync(`${dataDirectory}/TParkC_R.txt`, "utf8")) * 2 +
+    parseInt(fs.readFileSync(`${dataDirectory}/TDockC_R.txt`, "utf8")) * 6 +
+    parseInt(fs.readFileSync(`${dataDirectory}/TEngC_R.txt`, "utf8")) * 10;
+  const endBlue =
+    parseInt(fs.readFileSync(`${dataDirectory}/TParkC_B.txt`, "utf8")) * 2 +
+    parseInt(fs.readFileSync(`${dataDirectory}/TDockC_B.txt`, "utf8")) * 6 +
+    parseInt(fs.readFileSync(`${dataDirectory}/TEngC_B.txt`, "utf8")) * 10;
+
+  // Calculate charge station points
+  const chargeRed =
+    endRed +
+    parseInt(fs.readFileSync(`${dataDirectory}/ADockC_R.txt`, "utf8")) * 8 +
+    parseInt(fs.readFileSync(`${dataDirectory}/AEngC_R.txt`, "utf8")) * 12;
+  const chargeBlue =
+    endBlue +
+    parseInt(fs.readFileSync(`${dataDirectory}/ADockC_B.txt`, "utf8")) * 8 +
+    parseInt(fs.readFileSync(`${dataDirectory}/AEngC_B.txt`, "utf8")) * 12;
+
+  // Count links
+  const linksRed = parseInt(
+    fs.readFileSync(`${dataDirectory}/TLinkC_R.txt`, "utf8")
+  );
+  const linksBlue = parseInt(
+    fs.readFileSync(`${dataDirectory}/TLinkC_B.txt`, "utf8")
+  );
 
   // Calculate ranking points
   const scoreRed = parseInt(
-    fs.readFileSync(`${dataDirectory}/ScoreR.txt`, "utf8")
+    fs.readFileSync(`${dataDirectory}/Score_R.txt`, "utf8")
   );
   const scoreBlue = parseInt(
-    fs.readFileSync(`${dataDirectory}/ScoreB.txt`, "utf8")
-  );
-
-  const endRed = parseInt(fs.readFileSync(`${dataDirectory}/EndR.txt`, "utf8"));
-  const endBlue = parseInt(
-    fs.readFileSync(`${dataDirectory}/EndB.txt`, "utf8")
+    fs.readFileSync(`${dataDirectory}/Score_B.txt`, "utf8")
   );
 
   const rpRedBonus =
-    (endRed >= ENDGAME_BONUS_RP ? 1 : 0) + (cargoRed >= CARGO_BONUS_RP ? 1 : 0);
+    (linksRed >= SUSTAINABILITY_BONUS_RP ? 1 : 0) +
+    (chargeRed >= ACTIVATION_BONUS_RP ? 1 : 0);
   const rpRed =
     rpRedBonus + (scoreRed > scoreBlue ? 2 : scoreRed === scoreBlue ? 1 : 0);
 
   const rpBlueBonus =
-    (endBlue >= ENDGAME_BONUS_RP ? 1 : 0) +
-    (cargoBlue >= CARGO_BONUS_RP ? 1 : 0);
+    (linksBlue >= SUSTAINABILITY_BONUS_RP ? 1 : 0) +
+    (chargeBlue >= ACTIVATION_BONUS_RP ? 1 : 0);
   const rpBlue =
     rpBlueBonus + (scoreBlue > scoreRed ? 2 : scoreBlue === scoreRed ? 1 : 0);
 
   // Calculate tiebreakers
   const penaltyRed = parseInt(
-    fs.readFileSync(`${dataDirectory}/PenR.txt`, "utf8")
+    fs.readFileSync(`${dataDirectory}/Fouls_R.txt`, "utf8")
   );
   const penaltyBlue = parseInt(
-    fs.readFileSync(`${dataDirectory}/PenB.txt`, "utf8")
+    fs.readFileSync(`${dataDirectory}/Fouls_B.txt`, "utf8")
   );
 
   const tiebreakerRed = scoreRed - penaltyRed;
@@ -114,20 +142,20 @@ export async function getMatchData(
     blueScore: scoreBlue,
     redPenalty: penaltyRed,
     bluePenalty: penaltyBlue,
-    redAuto: parseInt(fs.readFileSync(`${dataDirectory}/AutoR.txt`, "utf8")),
-    blueAuto: parseInt(fs.readFileSync(`${dataDirectory}/AutoB.txt`, "utf8")),
-    redTeleop: parseInt(fs.readFileSync(`${dataDirectory}/TeleR.txt`, "utf8")),
-    blueTeleop: parseInt(fs.readFileSync(`${dataDirectory}/TeleB.txt`, "utf8")),
+    redAuto: parseInt(fs.readFileSync(`${dataDirectory}/Auto_R.txt`, "utf8")),
+    blueAuto: parseInt(fs.readFileSync(`${dataDirectory}/Auto_B.txt`, "utf8")),
+    redTeleop: parseInt(fs.readFileSync(`${dataDirectory}/Tele_R.txt`, "utf8")),
+    blueTeleop: parseInt(
+      fs.readFileSync(`${dataDirectory}/Tele_B.txt`, "utf8")
+    ),
     redEnd: endRed,
     blueEnd: endBlue,
-    red1Contribution: parseInt(contribRed[0]),
-    red2Contribution: parseInt(contribRed[1]),
-    red3Contribution: parseInt(contribRed[2]),
-    blue1Contribution: parseInt(contribBlue[0]),
-    blue2Contribution: parseInt(contribBlue[1]),
-    blue3Contribution: parseInt(contribBlue[2]),
-    redCargo: cargoRed,
-    blueCargo: cargoBlue,
+    redLinks: linksRed,
+    blueLinks: linksBlue,
+    redChargeStation: chargeRed,
+    blueChargeStation: chargeBlue,
+    redGamePieces: piecesRed,
+    blueGamePieces: piecesBlue,
     redRP: rpRed,
     blueRP: rpBlue,
     redTiebreaker: tiebreakerRed,
