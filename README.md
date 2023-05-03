@@ -12,6 +12,8 @@ A Discord bot for running simulation robotics tournaments in xRC Sim. Designed t
 
 To be used for competitions and tournaments in the Unity-based game [xRC Simulator](http://xrcsimulator.org/). Used in online [SRC events](https://secondrobotics.org).
 
+Powered by [Discord.js](https://discord.js.org/) and [Google Sheets API](https://developers.google.com/sheets/api). Based on the [NicholasBottone/xRCSim-Tourney-Runner](https://github.com/NicholasBottone/xRCSim-Tourney-Runner) CLI tool.
+
 ## Getting Started
 
 - You must have a Discord bot application setup with a token.

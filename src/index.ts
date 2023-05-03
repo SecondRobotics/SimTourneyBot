@@ -1,14 +1,18 @@
 import "./config/env";
 import "./config/client";
-import logger from "./config/logger";
 import { getCommands, registerCommands } from "./commandManager";
 import { Client, GatewayIntentBits } from "discord.js";
 import { registerEvents } from "./eventManager";
-
-logger.info("Starting up...");
+import { setupGoogleSheets } from "./lib/setup";
 
 const client = new Client({
-  intents: [GatewayIntentBits.Guilds],
+  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers],
+});
+
+// Setup Google Sheets connection.
+setupGoogleSheets().then((sheets) => {
+  client.scheduleSheet = sheets.scheduleSheet;
+  client.matchesSheet = sheets.matchesSheet;
 });
 
 // Register bot slash commands.

@@ -3,6 +3,7 @@ import type {
   Collection,
   SlashCommandBuilder,
 } from "discord.js";
+import type { GoogleSpreadsheetWorksheet } from "google-spreadsheet";
 
 export type Command = {
   data: SlashCommandBuilder;
@@ -13,5 +14,7 @@ export type Command = {
 declare module "discord.js" {
   interface Client {
     commands: Collection<string, Command>;
+    scheduleSheet: GoogleSpreadsheetWorksheet;
+    matchesSheet: GoogleSpreadsheetWorksheet;
   }
 }

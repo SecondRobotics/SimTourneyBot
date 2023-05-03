@@ -31,3 +31,6 @@ yarn-error.log*
 /Data1
 /Data2
 /TourneyData
+
+# MatchMaker
+MatchMaker*

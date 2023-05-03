@@ -7,4 +7,5 @@ export const once = true;
 
 export const execute = (client: Client) => {
   logger.info(`Ready! Logged in as ${client.user?.tag}`);
+  client.user?.setActivity("xRC Simulator");
 };

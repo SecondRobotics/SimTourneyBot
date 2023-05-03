@@ -8,5 +8,11 @@ export const data = new SlashCommandBuilder()
   .setDescription("Replies with Pong!");
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
-  await interaction.reply("Pong!");
+  const sent = await interaction.reply({
+    content: "Pong!",
+    fetchReply: true,
+  });
+  interaction.editReply(
+    `Pong! (${sent.createdTimestamp - interaction.createdTimestamp}ms)`
+  );
 };
