@@ -108,6 +108,14 @@ export async function copyScheduleToMatchesSheet(
   const scheduleRows = await scheduleSheet.getRows();
   const matchRows = await matchesSheet.getRows();
 
+  // discord id to display name map
+  const players = new Map<string, string>();
+  for (const row of scheduleRows) {
+    const discordIds = row["Discord Ids"];
+    const displayNames = row["Display Names"];
+    players.set(discordIds, displayNames);
+  }
+
   for (const row of scheduleRows) {
     const matchNumber = row["Match Number"];
     if (!Number.isInteger(parseInt(matchNumber))) {
@@ -118,20 +126,20 @@ export async function copyScheduleToMatchesSheet(
     if (!matchRow) {
       await matchesSheet.addRow([
         matchNumber,
-        row["Red 1"],
-        row["Red 2"],
-        row["Red 3"],
-        row["Blue 1"],
-        row["Blue 2"],
-        row["Blue 3"],
+        players.get(row["Red 1"]),
+        players.get(row["Red 2"]),
+        players.get(row["Red 3"]),
+        players.get(row["Blue 1"]),
+        players.get(row["Blue 2"]),
+        players.get(row["Blue 3"]),
       ]);
     } else {
-      matchRow["Red 1"] = row["Red 1"];
-      matchRow["Red 2"] = row["Red 2"];
-      matchRow["Red 3"] = row["Red 3"];
-      matchRow["Blue 1"] = row["Blue 1"];
-      matchRow["Blue 2"] = row["Blue 2"];
-      matchRow["Blue 3"] = row["Blue 3"];
+      matchRow["Red 1"] = players.get(row["Red 1"]);
+      matchRow["Red 2"] = players.get(row["Red 2"]);
+      matchRow["Red 3"] = players.get(row["Red 3"]);
+      matchRow["Blue 1"] = players.get(row["Blue 1"]);
+      matchRow["Blue 2"] = players.get(row["Blue 2"]);
+      matchRow["Blue 3"] = players.get(row["Blue 3"]);
       await matchRow.save();
     }
   }
