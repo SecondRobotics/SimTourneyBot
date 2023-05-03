@@ -84,7 +84,20 @@ export async function isAlreadyPlayed(
     return false;
   }
 
-  return row["Red Score"] != "" || row["Blue Score"] != "";
+  return !!row["Red Score"] || !!row["Blue Score"];
+}
+
+export async function getSoonestUnplayedMatch(
+  matchesSheet: GoogleSpreadsheetWorksheet
+) {
+  const rows = await matchesSheet.getRows();
+
+  const row = rows.find((r) => !r["Red Score"] && !r["Blue Score"]);
+  if (!row) {
+    return null;
+  }
+
+  return row["Match Number"];
 }
 
 export async function getMatch(
@@ -99,6 +112,22 @@ export async function getMatch(
   }
 
   return row;
+}
+
+export async function getMatchPlayers(
+  scheduleSheet: GoogleSpreadsheetWorksheet,
+  matchNumber: number
+): Promise<string[]> {
+  const row = await getMatch(scheduleSheet, matchNumber);
+
+  return [
+    row["Red 1"],
+    row["Red 2"],
+    row["Red 3"],
+    row["Blue 1"],
+    row["Blue 2"],
+    row["Blue 3"],
+  ];
 }
 
 export async function copyScheduleToMatchesSheet(

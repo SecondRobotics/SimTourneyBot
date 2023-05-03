@@ -11,6 +11,7 @@ const envSchema = z.object({
   DISCORD_CLIENT_ID: z.string().min(1),
   DISCORD_GUILD_ID: z.string().min(1),
   DISCORD_CHANNEL_ID: z.string().min(1),
+  DISCORD_CATEGORY_ID: z.string().min(1),
 });
 
 envSchema.parse(process.env);
