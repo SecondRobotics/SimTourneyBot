@@ -11,6 +11,7 @@ import {
 } from "../lib/googleSheet";
 import { saveField } from "../lib/saver";
 import { summonPlayersForMatch } from "src/lib/summonPlayers";
+import { sendMatchResultEmbed } from "src/lib/resultEmbed";
 
 export const data = new SlashCommandBuilder()
   .setName("save_match_results")
@@ -81,7 +82,8 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
 
   await interaction.editReply(`✅ Saved match ${matchNumber} results!`);
 
-  // TODO: Send an embed with the match results
+  // Send an embed with the match results
+  if (interaction.guild) sendMatchResultEmbed(interaction.guild, match);
 
   // Get the match data from the schedule sheet (discord ids)
   const players = await getMatchPlayers(
