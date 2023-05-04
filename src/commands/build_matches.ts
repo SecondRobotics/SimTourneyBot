@@ -14,10 +14,17 @@ export const data = new SlashCommandBuilder()
 export const execute = async (interaction: ChatInputCommandInteraction) => {
   await interaction.deferReply();
 
-  await buildMatchSheet(
+  const res = await buildMatchSheet(
     interaction.client.matchesSheet,
     interaction.client.scheduleSheet
   );
+
+  if (!res) {
+    await interaction.editReply({
+      content: "❌ Failed to update match sheet",
+    });
+    return;
+  }
 
   await interaction.editReply({
     content: "✅ Match sheet updated!",

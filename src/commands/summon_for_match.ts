@@ -32,6 +32,12 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     matchNumber = matchNumberOption;
   }
 
+  // If we still don't have a match number, error out
+  if (!matchNumber) {
+    await interaction.editReply("⚠️ It looks like there are no matches left!");
+    return;
+  }
+
   // Get the match data from the schedule sheet (discord ids)
   const players = await getMatchPlayers(
     interaction.client.scheduleSheet,

@@ -97,7 +97,7 @@ export async function getSoonestUnplayedMatch(
     return null;
   }
 
-  return row["Match Number"];
+  return row["Match Number"] as number;
 }
 
 export async function getMatch(
