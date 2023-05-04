@@ -22,7 +22,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
   await interaction.deferReply();
 
   // Get the current match number based on the matches sheet
-  let matchNumber = await getSoonestUnplayedMatch(
+  let { matchNumber } = await getSoonestUnplayedMatch(
     interaction.client.matchesSheet
   );
 

@@ -1,30 +1,34 @@
-import type { GoogleSpreadsheetWorksheet } from "google-spreadsheet";
+import type {
+  GoogleSpreadsheetRow,
+  GoogleSpreadsheetWorksheet,
+} from "google-spreadsheet";
 import { getMatchData } from "./field";
 import { copyScheduleToMatchesSheet, updateMatch } from "./googleSheet";
 import logger from "../config/logger";
+import type { Match } from "./match";
 
 export async function saveField(
-  scheduleSheet: GoogleSpreadsheetWorksheet,
   matchesSheet: GoogleSpreadsheetWorksheet,
   matchNumber: number,
-  field: number
+  field: number,
+  row: GoogleSpreadsheetRow
 ) {
-  let match;
+  let match: Match;
   try {
-    match = await getMatchData(scheduleSheet, `Data${field}`, matchNumber);
+    match = await getMatchData(row, `Data${field}`, matchNumber);
   } catch (e) {
     logger.error(e);
-    return false;
+    return null;
   }
 
   try {
     await updateMatch(matchesSheet, match);
   } catch (e) {
     logger.error(e);
-    return false;
+    return null;
   }
 
-  return true;
+  return match;
 }
 
 export async function buildMatchSheet(

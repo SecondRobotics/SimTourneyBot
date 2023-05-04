@@ -1,13 +1,12 @@
 import fs from "fs";
-import type { GoogleSpreadsheetWorksheet } from "google-spreadsheet";
-import { getMatch } from "./googleSheet";
+import type { GoogleSpreadsheetRow } from "google-spreadsheet";
 import type { Match } from "./match";
 
 const SUSTAINABILITY_BONUS_RP = 7;
 const ACTIVATION_BONUS_RP = 32;
 
 export async function getMatchData(
-  scheduleSheet: GoogleSpreadsheetWorksheet,
+  scheduledMatch: GoogleSpreadsheetRow,
   dataDirectory: string,
   matchNumber: number
 ) {
@@ -20,9 +19,6 @@ export async function getMatchData(
       `Data directory ${dataDirectory} is not populated with data`
     );
   }
-
-  // Get the match from the schedule sheet
-  const scheduledMatch = await getMatch(scheduleSheet, matchNumber);
 
   const redAlliance = [
     scheduledMatch["Red 1"],

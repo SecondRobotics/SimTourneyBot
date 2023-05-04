@@ -94,10 +94,10 @@ export async function getSoonestUnplayedMatch(
 
   const row = rows.find((r) => !r["Red Score"] && !r["Blue Score"]);
   if (!row) {
-    return null;
+    return { row: null, matchNumber: null };
   }
 
-  return row["Match Number"] as number;
+  return { row, matchNumber: row["Match Number"] as number };
 }
 
 export async function getMatch(
