@@ -121,10 +121,9 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     await blueChannel.delete();
   }
 
-  // Get the next match number based on the matches sheet
-  const { matchNumber: nextMatchNumber } = await getSoonestUnplayedMatch(
-    interaction.client.matchesSheet
-  );
+  // Get the next two match numbers based on the matches sheet
+  const { matchNumber: nextMatchNumber, secondMatchNumber } =
+    await getSoonestUnplayedMatch(interaction.client.matchesSheet);
 
   // Summon players for the next match
   const res = await summonPlayersForMatch(
@@ -135,6 +134,21 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
   if (res) {
     await interaction.followUp(res);
     return;
+  }
+
+  // If there is a second match, summon players for that one too
+  if (secondMatchNumber) {
+    const res = await summonPlayersForMatch(
+      secondMatchNumber,
+      interaction.client.scheduleSheet,
+      interaction.guild
+    );
+    if (!res) {
+      await interaction.followUp(
+        `✅ Summoned players for matches ${nextMatchNumber} and ${secondMatchNumber}!`
+      );
+      return;
+    }
   }
 
   await interaction.followUp(

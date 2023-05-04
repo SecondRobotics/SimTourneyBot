@@ -22,9 +22,9 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
   await interaction.deferReply();
 
   // Get the current match number based on the matches sheet
-  let { matchNumber } = await getSoonestUnplayedMatch(
-    interaction.client.matchesSheet
-  );
+  const { matchNumber: nextMatchNumber, secondMatchNumber } =
+    await getSoonestUnplayedMatch(interaction.client.matchesSheet);
+  let matchNumber = nextMatchNumber;
 
   // If the user specified a match number, use that instead
   const matchNumberOption = interaction.options.getInteger("match");
@@ -40,6 +40,20 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
   if (res) {
     await interaction.editReply(res);
     return;
+  }
+
+  if (matchNumber === nextMatchNumber && secondMatchNumber) {
+    const res = await summonPlayersForMatch(
+      secondMatchNumber,
+      interaction.client.scheduleSheet,
+      interaction.guild
+    );
+    if (!res) {
+      await interaction.followUp(
+        `✅ Summoned players for matches ${nextMatchNumber} and ${secondMatchNumber}!`
+      );
+      return;
+    }
   }
 
   await interaction.editReply(`✅ Summoned players for match ${matchNumber}!`);

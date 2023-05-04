@@ -96,8 +96,15 @@ export async function getSoonestUnplayedMatch(
   if (!row) {
     return { row: null, matchNumber: null };
   }
+  const matchNumber = row["Match Number"] as number;
 
-  return { row, matchNumber: row["Match Number"] as number };
+  const secondRow = rows.find(
+    (r) =>
+      !r["Red Score"] && !r["Blue Score"] && r["Match Number"] != matchNumber
+  );
+  const secondMatchNumber = secondRow ? secondRow["Match Number"] : null;
+
+  return { row, matchNumber, secondMatchNumber };
 }
 
 export async function getMatch(
