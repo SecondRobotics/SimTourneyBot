@@ -10,8 +10,8 @@ import {
   getSoonestUnplayedMatch,
 } from "../lib/googleSheet";
 import { saveField } from "../lib/saver";
-import { summonPlayersForMatch } from "src/lib/summonPlayers";
-import { sendMatchResultEmbed } from "src/lib/resultEmbed";
+import { summonPlayersForMatch } from "../lib/summonPlayers";
+import { sendMatchResultEmbed } from "../lib/resultEmbed";
 
 export const data = new SlashCommandBuilder()
   .setName("save_match_results")
