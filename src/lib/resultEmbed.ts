@@ -1,30 +1,33 @@
 import { EmbedBuilder, type Guild } from "discord.js";
 import type { Match } from "./match";
 
-export async function sendMatchResultEmbed(guild: Guild, match: Match) {
-  // TODO: Build the embed using the match data
-  // const embed = new EmbedBuilder().setTitle(
-  //   `Match ${match.matchNumber} Results`
-  // );
+const codeBlock = (str: string) => `\`\`\`${str}\`\`\``;
 
-  // Send embed to the results channel
+/**
+ * Sends an embed to the discord channel with the match results
+ * @param guild server to send the embed to
+ * @param match object containing match data
+ */
+export async function sendMatchResultEmbed(guild: Guild, match: Match) {
+  // Get the channel to send the embed to
   const channel = guild.channels.cache.get(process.env.DISCORD_CHANNEL_ID);
 
-  const redAlliance =
-    '```${match.red1.padEnd(10, " ")}\n' +
-    '${match.red2.padEnd(10, " ")}\n' +
-    '${match.red3.padEnd(10, " ")\n```';
-  const blueAlliance =
-    '```${match.blue1.padEnd(10, " ")}\n' +
-    '${match.blue2.padEnd(10, " ")}\n' +
-    '${match.blue3.padEnd(10, " ")\n```';
+  const redAlliance = codeBlock(
+    [match.red1, match.red2, match.red3]
+      .map((x) => x.padEnd(10, " "))
+      .join("\n")
+  );
+  const blueAlliance = codeBlock(
+    [match.blue1, match.blue2, match.blue3]
+      .map((x) => x.padEnd(10, " "))
+      .join("\n")
+  );
 
-  let redAllianceTitle = "";
-  let blueAllianceTitle = "";
+  let redAllianceTitle: string;
+  let blueAllianceTitle: string;
   let color = 0x888888;
 
-  const redscore = match.redScore;
-  const bluescore = match.blueScore;
+  const { redScore, blueScore } = match;
 
   const breakdownTitle = "Match Breakdown";
 
@@ -42,6 +45,8 @@ export async function sendMatchResultEmbed(guild: Guild, match: Match) {
     blueAllianceTitle = ":blue_square: Blue Alliance";
   }
 
+  // FIXME: Needs to use `template strings` in order to use ${} syntax
+  // FIXME: Use the codeBlock() helper and consider mapping over arrays to better clean up the code
   const breakdown =
     '```${match.redAuto.toString().padStart(3, " ")} |       auto      | ${match.blueAuto.toString().padEnd(3, " ")}    \n' +
     '${match.redTeleop.toString().padStart(3, " ")} |      teleop     | ${match.blueTeleop.toString().padEnd(3, " ")}    \n' +
@@ -56,9 +61,9 @@ export async function sendMatchResultEmbed(guild: Guild, match: Match) {
     .setTitle(
       "Match ${match.matchNumber} Results" +
         "            " +
-        redscore.toString().padEnd(3, " ") +
+        redScore.toString().padEnd(3, " ") +
         " - " +
-        bluescore.toString().padEnd(3, " ")
+        blueScore.toString().padEnd(3, " ")
     )
     .addFields(
       { name: redAllianceTitle, value: redAlliance, inline: true },
