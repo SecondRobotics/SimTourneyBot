@@ -2,9 +2,9 @@ import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,
   PermissionFlagsBits,
-  ChannelType,
 } from "discord.js";
-import { getMatchPlayers, getSoonestUnplayedMatch } from "../lib/googleSheet";
+import { getSoonestUnplayedMatch } from "../lib/googleSheet";
+import { summonPlayersForMatch } from "../lib/summonPlayers";
 
 export const data = new SlashCommandBuilder()
   .setName("summon_for_match")
@@ -32,63 +32,14 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     matchNumber = matchNumberOption;
   }
 
-  // If we still don't have a match number, error out
-  if (!matchNumber) {
-    await interaction.editReply("⚠️ It looks like there are no matches left!");
-    return;
-  }
-
-  // Get the match data from the schedule sheet (discord ids)
-  const players = await getMatchPlayers(
+  const res = await summonPlayersForMatch(
+    matchNumber,
     interaction.client.scheduleSheet,
-    matchNumber
+    interaction.guild
   );
-
-  // Find the voice channels for this match
-  // Voice channels are named "🔴 Match _" and "🔵 Match _"
-  let redChannel = interaction.guild?.channels.cache.find(
-    (channel) =>
-      channel.type === ChannelType.GuildVoice &&
-      channel.name === `🔴 Match ${matchNumber}`
-  );
-  let blueChannel = interaction.guild?.channels.cache.find(
-    (channel) =>
-      channel.type === ChannelType.GuildVoice &&
-      channel.name === `🔵 Match ${matchNumber}`
-  );
-
-  // If the voice channels don't exist, create them (in category id process.env.DISCORD_CATEGORY_ID)
-  if (!redChannel) {
-    redChannel = await interaction.guild?.channels.create({
-      name: `🔴 Match ${matchNumber}`,
-      type: ChannelType.GuildVoice,
-      parent: process.env.DISCORD_CATEGORY_ID,
-    });
-  }
-  if (!blueChannel) {
-    blueChannel = await interaction.guild?.channels.create({
-      name: `🔵 Match ${matchNumber}`,
-      type: ChannelType.GuildVoice,
-      parent: process.env.DISCORD_CATEGORY_ID,
-    });
-  }
-
-  if (!redChannel || !blueChannel) {
-    await interaction.editReply("⚠️ Failed to create voice channels!");
+  if (res) {
+    await interaction.editReply(res);
     return;
-  }
-
-  // Move players into the voice channels
-  for (let i = 0; i < players.length; i++) {
-    const player = players[i];
-    const member = await interaction.guild?.members.fetch(player);
-    if (member && member.voice.channel) {
-      if (i < 3) {
-        await member.voice.setChannel(redChannel.id);
-      } else {
-        await member.voice.setChannel(blueChannel.id);
-      }
-    }
   }
 
   await interaction.editReply(`✅ Summoned players for match ${matchNumber}!`);

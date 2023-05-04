@@ -10,6 +10,7 @@ import {
   getSoonestUnplayedMatch,
 } from "../lib/googleSheet";
 import { saveField } from "../lib/saver";
+import { summonPlayersForMatch } from "src/lib/summonPlayers";
 
 export const data = new SlashCommandBuilder()
   .setName("save_match_results")
@@ -120,7 +121,23 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     await blueChannel.delete();
   }
 
-  // TODO: Summon players for the next match
+  // Get the next match number based on the matches sheet
+  const { matchNumber: nextMatchNumber } = await getSoonestUnplayedMatch(
+    interaction.client.matchesSheet
+  );
 
-  // await interaction.followUp(`✅ Summoned players for match ${matchNumber}!`);
+  // Summon players for the next match
+  const res = await summonPlayersForMatch(
+    nextMatchNumber,
+    interaction.client.scheduleSheet,
+    interaction.guild
+  );
+  if (res) {
+    await interaction.followUp(res);
+    return;
+  }
+
+  await interaction.followUp(
+    `✅ Summoned players for match ${nextMatchNumber}!`
+  );
 };
