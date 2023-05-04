@@ -46,7 +46,8 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     const res = await summonPlayersForMatch(
       secondMatchNumber,
       interaction.client.scheduleSheet,
-      interaction.guild
+      interaction.guild,
+      true
     );
     if (!res) {
       await interaction.followUp(

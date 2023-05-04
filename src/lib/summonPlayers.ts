@@ -5,7 +5,8 @@ import type { GoogleSpreadsheetWorksheet } from "google-spreadsheet";
 export async function summonPlayersForMatch(
   matchNumber: number | null,
   scheduleSheet: GoogleSpreadsheetWorksheet,
-  guild: Guild | null
+  guild: Guild | null,
+  onDeck?: boolean
 ): Promise<string | undefined> {
   // If we don't have a match number, error out
   if (!matchNumber) {
@@ -48,15 +49,25 @@ export async function summonPlayersForMatch(
     return "⚠️ Failed to create voice channels!";
   }
 
-  // Move players into the voice channels
+  // Move players into the voice channels and send them a DM
   for (let i = 0; i < players.length; i++) {
     const player = players[i];
     const member = await guild?.members.fetch(player);
-    if (member && member.voice.channel) {
+    if (member) {
       if (i < 3) {
-        await member.voice.setChannel(redChannel.id);
+        if (member.voice.channel) await member.voice.setChannel(redChannel.id);
+        await member.send(
+          onDeck
+            ? `🔴 You are on deck for match ${matchNumber}, where you will be playing on the red alliance! Please join <#${redChannel.id}>.`
+            : `🔴 You are up in match ${matchNumber} on the red alliance! Please join <#${redChannel.id}>.`
+        );
       } else {
-        await member.voice.setChannel(blueChannel.id);
+        if (member.voice.channel) await member.voice.setChannel(blueChannel.id);
+        await member.send(
+          onDeck
+            ? `🔵 You are on deck for match ${matchNumber}, where you will be playing on the blue alliance! Please join <#${blueChannel.id}>.`
+            : `🔵 You are up in match ${matchNumber} on the blue alliance! Please join <#${blueChannel.id}>.`
+        );
       }
     }
   }

@@ -81,6 +81,8 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
 
   await interaction.editReply(`✅ Saved match ${matchNumber} results!`);
 
+  // TODO: Send an embed with the match results
+
   // Get the match data from the schedule sheet (discord ids)
   const players = await getMatchPlayers(
     interaction.client.scheduleSheet,
@@ -141,7 +143,8 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     const res = await summonPlayersForMatch(
       secondMatchNumber,
       interaction.client.scheduleSheet,
-      interaction.guild
+      interaction.guild,
+      true
     );
     if (!res) {
       await interaction.followUp(

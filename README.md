@@ -6,7 +6,7 @@ A Discord bot for running simulation robotics tournaments in xRC Sim. Designed t
 
 - [x] Generates match schedules and player lists.
 - [x] Creates voice channels for each match and moves players into them.
-- [ ] Saves match results from xRC Simulator games to a Google Sheet.
+- [x] Saves match results from xRC Simulator games to a Google Sheet.
 - [ ] Notifies players of upcoming matches and results via Discord.
 - [ ] Displays live game data on livestream overlays via OBS Lua scripts.
 
