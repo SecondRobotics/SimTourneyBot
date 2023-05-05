@@ -45,16 +45,24 @@ export async function sendMatchResultEmbed(guild: Guild, match: Match) {
     blueAllianceTitle = ":blue_square: Blue Alliance";
   }
 
-  // FIXME: Needs to use `template strings` in order to use ${} syntax
-  // FIXME: Use the codeBlock() helper and consider mapping over arrays to better clean up the code
-  const breakdown =
-    '```${match.redAuto.toString().padStart(3, " ")} |       auto      | ${match.blueAuto.toString().padEnd(3, " ")}    \n' +
-    '${match.redTeleop.toString().padStart(3, " ")} |      teleop     | ${match.blueTeleop.toString().padEnd(3, " ")}    \n' +
-    '${match.redEnd.toString().padStart(3, " ")} |     endgame     | ${match.blueEnd.toString().padEnd(3, " ")}    \n' +
-    '${match.redPenalty.toString().padStart(3, " ")} |    penalties    | ${match.bluePenalty.toString().padEnd(3, " ")}    \n' +
-    '${match.redGamePieces.toString().padStart(3, " ")} |   game pieces   | ${match.blueGamePieces.toString().padEnd(3, " ")}    \n';
-  "    |                 |    \n" +
-    '${match.redRP.toString().padStart(3, " ")} | ranking points  | ${match.blueRP.toString().padEnd(3, " ")}    ```';
+  const breakdown = codeBlock(
+    [
+      [match.redAuto, " |      auto       | ", match.blueAuto],
+      [match.redTeleop, " |     teleop      | ", match.blueTeleop],
+      [match.redEnd, " |     endgame     | ", match.blueEnd],
+      [match.redPenalty, " |    penalties    | ", match.bluePenalty],
+      [match.redGamePieces, " |   game pieces   | ", match.blueGamePieces],
+      ["", " |                 | ", ""],
+      [match.redRP, " | ranking points  | ", match.blueRP],
+    ]
+      .map(
+        (x) =>
+          x[0].toString().padStart(3, " ") +
+          x[1] +
+          x[2].toString().padEnd(3, " ")
+      )
+      .join("\n")
+  );
 
   const embed = new EmbedBuilder()
     .setColor(color)
