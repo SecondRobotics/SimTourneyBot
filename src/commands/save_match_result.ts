@@ -12,6 +12,7 @@ import {
 import { saveField } from "../lib/saver";
 import { summonPlayersForMatch } from "../lib/summonPlayers";
 import { sendMatchResultEmbed } from "../lib/resultEmbed";
+import { setMatchNumber } from "../lib/field";
 
 export const data = new SlashCommandBuilder()
   .setName("save_match_results")
@@ -139,6 +140,8 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     await interaction.followUp(res);
     return;
   }
+
+  if (nextMatchNumber) setMatchNumber(nextMatchNumber);
 
   // If there is a second match, summon players for that one too
   if (secondMatchNumber) {

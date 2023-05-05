@@ -5,6 +5,7 @@ import {
 } from "discord.js";
 import { getSoonestUnplayedMatch } from "../lib/googleSheet";
 import { summonPlayersForMatch } from "../lib/summonPlayers";
+import { setMatchNumber } from "../lib/field";
 
 export const data = new SlashCommandBuilder()
   .setName("summon_for_match")
@@ -41,6 +42,8 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     await interaction.editReply(res);
     return;
   }
+
+  if (matchNumber) setMatchNumber(matchNumber);
 
   if (matchNumber === nextMatchNumber && secondMatchNumber) {
     const res = await summonPlayersForMatch(

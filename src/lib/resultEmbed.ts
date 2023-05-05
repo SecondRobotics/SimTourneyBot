@@ -1,7 +1,7 @@
 import { EmbedBuilder, type Guild } from "discord.js";
 import type { Match } from "./match";
 
-const codeBlock = (str: string) => `\`\`\`${str}\`\`\``;
+const codeBlock = (str: string) => `\`\`\`\n${str}\n\`\`\``;
 
 /**
  * Sends an embed to the discord channel with the match results
