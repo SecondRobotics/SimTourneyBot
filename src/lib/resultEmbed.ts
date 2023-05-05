@@ -22,7 +22,7 @@ export async function sendMatchResultEmbed(guild: Guild, match: Match) {
       .map((x) => x.padEnd(10, " "))
       .join("\n")
   );
-  
+
   const breakdownTitle = "Match Breakdown";
   let redAllianceTitle = "Red Alliance :red_square:";
   let blueAllianceTitle = ":blue_square: Blue Alliance";
@@ -60,7 +60,9 @@ export async function sendMatchResultEmbed(guild: Guild, match: Match) {
   const embed = new EmbedBuilder()
     .setColor(color)
     .setTitle(
-      `Match ${match.matchNumber} Results            ${match.redScore.toString().padEnd(3, " ")} - ${match.blueScore.toString().padEnd(3, " ")}`
+      `Match ${match.matchNumber} Results            ${match.redScore
+        .toString()
+        .padEnd(3, " ")} - ${match.blueScore.toString().padEnd(3, " ")}`
     )
     .addFields(
       { name: redAllianceTitle, value: redAlliance, inline: true },
