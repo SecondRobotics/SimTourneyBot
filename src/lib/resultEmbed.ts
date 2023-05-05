@@ -22,27 +22,20 @@ export async function sendMatchResultEmbed(guild: Guild, match: Match) {
       .map((x) => x.padEnd(10, " "))
       .join("\n")
   );
-
-  let redAllianceTitle: string;
-  let blueAllianceTitle: string;
-  let color = 0x888888;
-
-  const { redScore, blueScore } = match;
-
+  
   const breakdownTitle = "Match Breakdown";
+  let redAllianceTitle = "Red Alliance :red_square:";
+  let blueAllianceTitle = ":blue_square: Blue Alliance";
+  let color = 0x888888;
 
   if (match.redScore > match.blueScore) {
     redAllianceTitle = "Red Alliance :trophy:";
     color = 0xff0000;
-  } else {
-    redAllianceTitle = "Red Alliance :red_square:";
   }
 
   if (match.blueScore > match.redScore) {
     blueAllianceTitle = ":trophy: Blue Alliance";
     color = 0x0000ff;
-  } else {
-    blueAllianceTitle = ":blue_square: Blue Alliance";
   }
 
   const breakdown = codeBlock(
@@ -67,11 +60,7 @@ export async function sendMatchResultEmbed(guild: Guild, match: Match) {
   const embed = new EmbedBuilder()
     .setColor(color)
     .setTitle(
-      "Match ${match.matchNumber} Results" +
-        "            " +
-        redScore.toString().padEnd(3, " ") +
-        " - " +
-        blueScore.toString().padEnd(3, " ")
+      `Match ${match.matchNumber} Results            ${match.redScore.toString().padEnd(3, " ")} - ${match.blueScore.toString().padEnd(3, " ")}`
     )
     .addFields(
       { name: redAllianceTitle, value: redAlliance, inline: true },
