@@ -2,7 +2,7 @@ import fs from "fs";
 import type { GoogleSpreadsheetRow } from "google-spreadsheet";
 import type { Match } from "./match";
 
-const SUSTAINABILITY_BONUS_RP = 7;
+const SUSTAINABILITY_BONUS_RP = 9;
 const ACTIVATION_BONUS_RP = 32;
 
 export async function getMatchData(
@@ -165,5 +165,5 @@ export async function getMatchData(
 
 export function setMatchNumber(matchNumber: number) {
   fs.existsSync("TourneyData/") || fs.mkdirSync("TourneyData/");
-  fs.writeFileSync("TourneyData/MatchNumber.txt", String(matchNumber));
+  fs.writeFileSync("TourneyData/MatchNumber.txt", `Quals ${matchNumber}`);
 }
