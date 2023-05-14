@@ -7,6 +7,7 @@ import { spawn } from "child_process";
 import fs from "fs";
 import { postSchedule } from "../lib/googleSheet";
 import fetch from "node-fetch";
+import logger from "../config/logger";
 
 export const data = new SlashCommandBuilder()
   .setName("generate_schedule")
@@ -56,16 +57,14 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
   await interaction.guild.members.fetch();
   const participantRole = await interaction.guild.roles.fetch(participants.id);
   if (!participantRole) {
-    await interaction.editReply({
-      content: "Could not find the participant role",
-    });
+    await interaction.editReply("Could not find the participant role");
     return;
   }
   const participantCount = participantRole.members.size;
 
-  interaction.editReply({
-    content: `Generating a schedule for ${participantCount} participants playing ${rounds} rounds...`,
-  });
+  interaction.editReply(
+    `Generating a schedule for ${participantCount} participants playing ${rounds} rounds...`
+  );
 
   // Call MatchMaker by Idle Loop to generate a schedule
   const matchMaker = spawn("./MatchMaker", [
@@ -86,9 +85,9 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     matchMaker.once("close", resolve);
   });
 
-  interaction.editReply({
-    content: `Generated a schedule for ${participantCount} participants playing ${rounds} rounds. Saving...`,
-  });
+  interaction.editReply(
+    `Generated a schedule for ${participantCount} participants playing ${rounds} rounds. Saving...`
+  );
 
   // Handle the output of MatchMaker
   const schedule = fs.readFileSync("./schedule.txt", "utf-8");
@@ -147,13 +146,18 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     matches,
     playerIds,
     playerNames
-  );
+  ).catch((err) => {
+    logger.error(err);
+    interaction.editReply(
+      "Failed to save the schedule to Google Sheets (check the logs)"
+    );
+    return;
+  });
 
   const sheetsUrl = `https://docs.google.com/spreadsheets/d/${process.env.GOOGLE_SHEET_DOC_ID}`;
-  await interaction.editReply({
-    content:
-      `✅ Generated a schedule for ${participantCount} participants playing ${rounds} rounds! Saved! <` +
+  await interaction.editReply(
+    `✅ Generated a schedule for ${participantCount} participants playing ${rounds} rounds! Saved! <` +
       sheetsUrl +
-      ">",
-  });
+      ">"
+  );
 };

@@ -1,6 +1,7 @@
 import { ChannelType, type Guild } from "discord.js";
 import { getMatchPlayers } from "./googleSheet";
 import type { GoogleSpreadsheetWorksheet } from "google-spreadsheet";
+import logger from "../config/logger";
 
 export async function summonPlayersForMatch(
   matchNumber: number | null,
@@ -55,19 +56,29 @@ export async function summonPlayersForMatch(
     const member = await guild?.members.fetch(player);
     if (member) {
       if (i < 3) {
-        if (member.voice.channel) await member.voice.setChannel(redChannel.id);
-        await member.send(
-          onDeck
-            ? `🔴 You are on deck for match ${matchNumber}, where you will be playing on the red alliance! Please join <#${redChannel.id}>.`
-            : `🔴 You are up in match ${matchNumber} on the red alliance! Please join <#${redChannel.id}>.`
-        );
+        if (member.voice.channel)
+          await member.voice
+            .setChannel(redChannel.id)
+            .catch(() => logger.error(`Failed to move ${member.user.tag}`));
+        await member
+          .send(
+            onDeck
+              ? `🔴 You are on deck for match ${matchNumber}, where you will be playing on the red alliance! Please join <#${redChannel.id}>.`
+              : `🔴 You are up in match ${matchNumber} on the red alliance! Please join <#${redChannel.id}>.`
+          )
+          .catch(() => logger.error(`Failed to send DM to ${member.user.tag}`));
       } else {
-        if (member.voice.channel) await member.voice.setChannel(blueChannel.id);
-        await member.send(
-          onDeck
-            ? `🔵 You are on deck for match ${matchNumber}, where you will be playing on the blue alliance! Please join <#${blueChannel.id}>.`
-            : `🔵 You are up in match ${matchNumber} on the blue alliance! Please join <#${blueChannel.id}>.`
-        );
+        if (member.voice.channel)
+          await member.voice
+            .setChannel(blueChannel.id)
+            .catch(() => logger.error(`Failed to move ${member.user.tag}`));
+        await member
+          .send(
+            onDeck
+              ? `🔵 You are on deck for match ${matchNumber}, where you will be playing on the blue alliance! Please join <#${blueChannel.id}>.`
+              : `🔵 You are up in match ${matchNumber} on the blue alliance! Please join <#${blueChannel.id}>.`
+          )
+          .catch(() => logger.error(`Failed to send DM to ${member.user.tag}`));
       }
     }
   }

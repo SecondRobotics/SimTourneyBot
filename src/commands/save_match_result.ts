@@ -13,6 +13,7 @@ import { saveField } from "../lib/saver";
 import { summonPlayersForMatch } from "../lib/summonPlayers";
 import { sendMatchResultEmbed } from "../lib/resultEmbed";
 import { setMatchNumber } from "../lib/field";
+import logger from "../config/logger";
 
 export const data = new SlashCommandBuilder()
   .setName("save_match_results")
@@ -76,7 +77,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
   );
   if (!match) {
     await interaction.editReply(
-      "⚠️ Something went wrong saving the match results!"
+      "⚠️ Something went wrong saving the match results! (check the logs)"
     );
     return;
   }
@@ -102,7 +103,11 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     for (const player of players) {
       const member = await interaction.guild?.members.fetch(player);
       if (member && member.voice.channel) {
-        await member.voice.setChannel(lobbyChannel.id);
+        await member.voice
+          .setChannel(lobbyChannel.id)
+          .catch(() =>
+            logger.error(`Failed to move ${member.user.tag} back to the lobby`)
+          );
       }
     }
   }
