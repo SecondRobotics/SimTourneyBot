@@ -146,7 +146,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  if (nextMatchNumber) setMatchNumber(nextMatchNumber);
+  if (nextMatchNumber) await setMatchNumber(nextMatchNumber);
 
   // If there is a second match, summon players for that one too
   if (secondMatchNumber) {

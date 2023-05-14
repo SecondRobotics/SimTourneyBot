@@ -4,7 +4,8 @@ import {
   PermissionFlagsBits,
 } from "discord.js";
 import { spawn } from "child_process";
-import fs from "fs";
+import fs from "fs/promises";
+import fsSync from "fs";
 import { postSchedule } from "../lib/googleSheet";
 import fetch from "node-fetch";
 import logger from "../config/logger";
@@ -77,7 +78,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
   ]);
 
   // Pipe the output of MatchMaker to a file
-  const out = fs.createWriteStream("./schedule.txt");
+  const out = fsSync.createWriteStream("./schedule.txt");
   matchMaker.stdout.pipe(out);
 
   // Wait for MatchMaker to finish
@@ -90,7 +91,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
   );
 
   // Handle the output of MatchMaker
-  const schedule = fs.readFileSync("./schedule.txt", "utf-8");
+  const schedule = await fs.readFile("./schedule.txt", "utf-8");
   const lines = schedule.split("\n");
 
   let i = 0;
@@ -115,7 +116,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
   }
 
   // Delete the schedule file
-  fs.unlinkSync("./schedule.txt");
+  await fs.unlink("./schedule.txt");
 
   // Create list of discord user ids and display names
   const playerIds = players.map((player) => player.id);

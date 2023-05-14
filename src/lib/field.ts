@@ -1,4 +1,5 @@
-import fs from "fs";
+import fs from "fs/promises";
+import fsSync from "fs";
 import type { GoogleSpreadsheetRow } from "google-spreadsheet";
 import type { Match } from "./match";
 
@@ -10,11 +11,11 @@ export async function getMatchData(
   dataDirectory: string,
   matchNumber: number
 ) {
-  if (!fs.existsSync(dataDirectory)) {
+  if (!fsSync.existsSync(dataDirectory)) {
     throw new Error(`Data directory ${dataDirectory} does not exist`);
   }
 
-  if (!fs.existsSync(`${dataDirectory}/Score_R.txt`)) {
+  if (!fsSync.existsSync(`${dataDirectory}/Score_R.txt`)) {
     throw new Error(
       `Data directory ${dataDirectory} is not populated with data`
     );
@@ -53,56 +54,56 @@ export async function getMatchData(
 
   // Count game pieces
   const piecesRed =
-    parseInt(fs.readFileSync(`${dataDirectory}/ABotC_R.txt`, "utf8")) +
-    parseInt(fs.readFileSync(`${dataDirectory}/AMidC_R.txt`, "utf8")) +
-    parseInt(fs.readFileSync(`${dataDirectory}/ATopC_R.txt`, "utf8")) +
-    parseInt(fs.readFileSync(`${dataDirectory}/TBotC_R.txt`, "utf8")) +
-    parseInt(fs.readFileSync(`${dataDirectory}/TMidC_R.txt`, "utf8")) +
-    parseInt(fs.readFileSync(`${dataDirectory}/TTopC_R.txt`, "utf8")) +
-    parseInt(fs.readFileSync(`${dataDirectory}/TSuper_R.txt`, "utf8"));
+    parseInt(await fs.readFile(`${dataDirectory}/ABotC_R.txt`, "utf8")) +
+    parseInt(await fs.readFile(`${dataDirectory}/AMidC_R.txt`, "utf8")) +
+    parseInt(await fs.readFile(`${dataDirectory}/ATopC_R.txt`, "utf8")) +
+    parseInt(await fs.readFile(`${dataDirectory}/TBotC_R.txt`, "utf8")) +
+    parseInt(await fs.readFile(`${dataDirectory}/TMidC_R.txt`, "utf8")) +
+    parseInt(await fs.readFile(`${dataDirectory}/TTopC_R.txt`, "utf8")) +
+    parseInt(await fs.readFile(`${dataDirectory}/TSuper_R.txt`, "utf8"));
   const piecesBlue =
-    parseInt(fs.readFileSync(`${dataDirectory}/ABotC_B.txt`, "utf8")) +
-    parseInt(fs.readFileSync(`${dataDirectory}/AMidC_B.txt`, "utf8")) +
-    parseInt(fs.readFileSync(`${dataDirectory}/ATopC_B.txt`, "utf8")) +
-    parseInt(fs.readFileSync(`${dataDirectory}/TBotC_B.txt`, "utf8")) +
-    parseInt(fs.readFileSync(`${dataDirectory}/TMidC_B.txt`, "utf8")) +
-    parseInt(fs.readFileSync(`${dataDirectory}/TTopC_B.txt`, "utf8")) +
-    parseInt(fs.readFileSync(`${dataDirectory}/TSuper_B.txt`, "utf8"));
+    parseInt(await fs.readFile(`${dataDirectory}/ABotC_B.txt`, "utf8")) +
+    parseInt(await fs.readFile(`${dataDirectory}/AMidC_B.txt`, "utf8")) +
+    parseInt(await fs.readFile(`${dataDirectory}/ATopC_B.txt`, "utf8")) +
+    parseInt(await fs.readFile(`${dataDirectory}/TBotC_B.txt`, "utf8")) +
+    parseInt(await fs.readFile(`${dataDirectory}/TMidC_B.txt`, "utf8")) +
+    parseInt(await fs.readFile(`${dataDirectory}/TTopC_B.txt`, "utf8")) +
+    parseInt(await fs.readFile(`${dataDirectory}/TSuper_B.txt`, "utf8"));
 
   // Calculate endgame points
   const endRed =
-    parseInt(fs.readFileSync(`${dataDirectory}/TParkC_R.txt`, "utf8")) * 2 +
-    parseInt(fs.readFileSync(`${dataDirectory}/TDockC_R.txt`, "utf8")) * 6 +
-    parseInt(fs.readFileSync(`${dataDirectory}/TEngC_R.txt`, "utf8")) * 10;
+    parseInt(await fs.readFile(`${dataDirectory}/TParkC_R.txt`, "utf8")) * 2 +
+    parseInt(await fs.readFile(`${dataDirectory}/TDockC_R.txt`, "utf8")) * 6 +
+    parseInt(await fs.readFile(`${dataDirectory}/TEngC_R.txt`, "utf8")) * 10;
   const endBlue =
-    parseInt(fs.readFileSync(`${dataDirectory}/TParkC_B.txt`, "utf8")) * 2 +
-    parseInt(fs.readFileSync(`${dataDirectory}/TDockC_B.txt`, "utf8")) * 6 +
-    parseInt(fs.readFileSync(`${dataDirectory}/TEngC_B.txt`, "utf8")) * 10;
+    parseInt(await fs.readFile(`${dataDirectory}/TParkC_B.txt`, "utf8")) * 2 +
+    parseInt(await fs.readFile(`${dataDirectory}/TDockC_B.txt`, "utf8")) * 6 +
+    parseInt(await fs.readFile(`${dataDirectory}/TEngC_B.txt`, "utf8")) * 10;
 
   // Calculate charge station points
   const chargeRed =
     endRed +
-    parseInt(fs.readFileSync(`${dataDirectory}/ADockC_R.txt`, "utf8")) * 8 +
-    parseInt(fs.readFileSync(`${dataDirectory}/AEngC_R.txt`, "utf8")) * 12;
+    parseInt(await fs.readFile(`${dataDirectory}/ADockC_R.txt`, "utf8")) * 8 +
+    parseInt(await fs.readFile(`${dataDirectory}/AEngC_R.txt`, "utf8")) * 12;
   const chargeBlue =
     endBlue +
-    parseInt(fs.readFileSync(`${dataDirectory}/ADockC_B.txt`, "utf8")) * 8 +
-    parseInt(fs.readFileSync(`${dataDirectory}/AEngC_B.txt`, "utf8")) * 12;
+    parseInt(await fs.readFile(`${dataDirectory}/ADockC_B.txt`, "utf8")) * 8 +
+    parseInt(await fs.readFile(`${dataDirectory}/AEngC_B.txt`, "utf8")) * 12;
 
   // Count links
   const linksRed = parseInt(
-    fs.readFileSync(`${dataDirectory}/TLinkC_R.txt`, "utf8")
+    await fs.readFile(`${dataDirectory}/TLinkC_R.txt`, "utf8")
   );
   const linksBlue = parseInt(
-    fs.readFileSync(`${dataDirectory}/TLinkC_B.txt`, "utf8")
+    await fs.readFile(`${dataDirectory}/TLinkC_B.txt`, "utf8")
   );
 
   // Calculate ranking points
   const scoreRed = parseInt(
-    fs.readFileSync(`${dataDirectory}/Score_R.txt`, "utf8")
+    await fs.readFile(`${dataDirectory}/Score_R.txt`, "utf8")
   );
   const scoreBlue = parseInt(
-    fs.readFileSync(`${dataDirectory}/Score_B.txt`, "utf8")
+    await fs.readFile(`${dataDirectory}/Score_B.txt`, "utf8")
   );
 
   const rpRedBonus =
@@ -119,10 +120,10 @@ export async function getMatchData(
 
   // Calculate tiebreakers
   const penaltyRed = parseInt(
-    fs.readFileSync(`${dataDirectory}/Fouls_R.txt`, "utf8")
+    await fs.readFile(`${dataDirectory}/Fouls_R.txt`, "utf8")
   );
   const penaltyBlue = parseInt(
-    fs.readFileSync(`${dataDirectory}/Fouls_B.txt`, "utf8")
+    await fs.readFile(`${dataDirectory}/Fouls_B.txt`, "utf8")
   );
 
   const tiebreakerRed = scoreRed - penaltyRed;
@@ -140,11 +141,15 @@ export async function getMatchData(
     blueScore: scoreBlue,
     redPenalty: penaltyRed,
     bluePenalty: penaltyBlue,
-    redAuto: parseInt(fs.readFileSync(`${dataDirectory}/Auto_R.txt`, "utf8")),
-    blueAuto: parseInt(fs.readFileSync(`${dataDirectory}/Auto_B.txt`, "utf8")),
-    redTeleop: parseInt(fs.readFileSync(`${dataDirectory}/Tele_R.txt`, "utf8")),
+    redAuto: parseInt(await fs.readFile(`${dataDirectory}/Auto_R.txt`, "utf8")),
+    blueAuto: parseInt(
+      await fs.readFile(`${dataDirectory}/Auto_B.txt`, "utf8")
+    ),
+    redTeleop: parseInt(
+      await fs.readFile(`${dataDirectory}/Tele_R.txt`, "utf8")
+    ),
     blueTeleop: parseInt(
-      fs.readFileSync(`${dataDirectory}/Tele_B.txt`, "utf8")
+      await fs.readFile(`${dataDirectory}/Tele_B.txt`, "utf8")
     ),
     redEnd: endRed,
     blueEnd: endBlue,
@@ -165,7 +170,7 @@ export async function getMatchData(
   return match;
 }
 
-export function setMatchNumber(matchNumber: number) {
-  fs.existsSync("TourneyData/") || fs.mkdirSync("TourneyData/");
-  fs.writeFileSync("TourneyData/MatchNumber.txt", `Quals ${matchNumber}`);
+export async function setMatchNumber(matchNumber: number) {
+  fsSync.existsSync("TourneyData/") || (await fs.mkdir("TourneyData/"));
+  await fs.writeFile("TourneyData/MatchNumber.txt", `Quals ${matchNumber}`);
 }
