@@ -173,4 +173,8 @@ export async function getMatchData(
 export async function setMatchNumber(matchNumber: number) {
   fsSync.existsSync("TourneyData/") || (await fs.mkdir("TourneyData/"));
   await fs.writeFile("TourneyData/MatchNumber.txt", `Quals ${matchNumber}`);
+  await fs.writeFile(
+    "TourneyData/PrevMatchNumber.txt",
+    `Quals ${matchNumber - 1}`
+  );
 }
