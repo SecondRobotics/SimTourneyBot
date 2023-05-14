@@ -58,14 +58,16 @@ export async function getMatchData(
     parseInt(fs.readFileSync(`${dataDirectory}/ATopC_R.txt`, "utf8")) +
     parseInt(fs.readFileSync(`${dataDirectory}/TBotC_R.txt`, "utf8")) +
     parseInt(fs.readFileSync(`${dataDirectory}/TMidC_R.txt`, "utf8")) +
-    parseInt(fs.readFileSync(`${dataDirectory}/TTopC_R.txt`, "utf8"));
+    parseInt(fs.readFileSync(`${dataDirectory}/TTopC_R.txt`, "utf8")) +
+    parseInt(fs.readFileSync(`${dataDirectory}/TSuper_R.txt`, "utf8"));
   const piecesBlue =
     parseInt(fs.readFileSync(`${dataDirectory}/ABotC_B.txt`, "utf8")) +
     parseInt(fs.readFileSync(`${dataDirectory}/AMidC_B.txt`, "utf8")) +
     parseInt(fs.readFileSync(`${dataDirectory}/ATopC_B.txt`, "utf8")) +
     parseInt(fs.readFileSync(`${dataDirectory}/TBotC_B.txt`, "utf8")) +
     parseInt(fs.readFileSync(`${dataDirectory}/TMidC_B.txt`, "utf8")) +
-    parseInt(fs.readFileSync(`${dataDirectory}/TTopC_B.txt`, "utf8"));
+    parseInt(fs.readFileSync(`${dataDirectory}/TTopC_B.txt`, "utf8")) +
+    parseInt(fs.readFileSync(`${dataDirectory}/TSuper_B.txt`, "utf8"));
 
   // Calculate endgame points
   const endRed =
