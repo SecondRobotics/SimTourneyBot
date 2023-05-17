@@ -147,7 +147,7 @@ export async function getSoonestUnplayedMatch(
 
   const row = rows.find((r) => !r["Red Score"] && !r["Blue Score"]);
   if (!row || row["Red 1"] === "TBD" || row["Blue 1"] === "TBD") {
-    return { row: null, matchNumber: null };
+    return { row: null, matchNumber: null, secondMatchNumber: null };
   }
   const matchNumber = row["Match Number"] as number;
 
