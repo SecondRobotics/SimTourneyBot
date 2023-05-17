@@ -170,11 +170,14 @@ export async function getMatchData(
   return match;
 }
 
-export async function setMatchNumber(matchNumber: number) {
+export async function setMatchNumber(matchType: string, matchNumber: number) {
+  const type =
+    matchType === "Qual" ? "Quals" : matchNumber < 14 ? "Playoff" : "Finals";
+
   fsSync.existsSync("TourneyData/") || (await fs.mkdir("TourneyData/"));
-  await fs.writeFile("TourneyData/MatchNumber.txt", `Quals ${matchNumber}`);
+  await fs.writeFile("TourneyData/MatchNumber.txt", `${type} ${matchNumber}`);
   await fs.writeFile(
     "TourneyData/PrevMatchNumber.txt",
-    `Quals ${matchNumber - 1}`
+    `${type} ${matchNumber - 1}`
   );
 }
