@@ -53,7 +53,33 @@ export async function setupConnection() {
     });
   }
 
-  return { matchesSheet, scheduleSheet };
+  let alliancesSheet = doc.sheetsByTitle.Alliances;
+  if (!alliancesSheet) {
+    alliancesSheet = await doc.addSheet({
+      title: "Alliances",
+      gridProperties: {
+        columnCount: 3,
+        frozenRowCount: 1,
+        rowCount: 9,
+      },
+      headerValues: ["captain", "pick1", "pick2"],
+    });
+  }
+
+  let playoffsSheet = doc.sheetsByTitle["Playoff Matches"];
+  if (!playoffsSheet) {
+    playoffsSheet = await doc.addSheet({
+      title: "Playoff Matches",
+      gridProperties: {
+        columnCount: headerValues.length,
+        frozenRowCount: 1,
+        rowCount: 2,
+      },
+      headerValues: headerValues,
+    });
+  }
+
+  return { matchesSheet, scheduleSheet, alliancesSheet, playoffsSheet };
 }
 
 export async function updateMatch(

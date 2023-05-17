@@ -16,5 +16,7 @@ declare module "discord.js" {
     commands: Collection<string, Command>;
     scheduleSheet: GoogleSpreadsheetWorksheet;
     matchesSheet: GoogleSpreadsheetWorksheet;
+    alliancesSheet: GoogleSpreadsheetWorksheet;
+    playoffsSheet: GoogleSpreadsheetWorksheet;
   }
 }

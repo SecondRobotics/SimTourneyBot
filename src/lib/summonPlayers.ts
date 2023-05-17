@@ -4,6 +4,7 @@ import type { GoogleSpreadsheetWorksheet } from "google-spreadsheet";
 import logger from "../config/logger";
 
 export async function summonPlayersForMatch(
+  matchType: "Qual" | "Playoff",
   matchNumber: number | null,
   scheduleSheet: GoogleSpreadsheetWorksheet,
   guild: Guild | null,

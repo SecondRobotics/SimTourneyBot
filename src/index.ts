@@ -13,6 +13,8 @@ const client = new Client({
 setupGoogleSheets().then((sheets) => {
   client.scheduleSheet = sheets.scheduleSheet;
   client.matchesSheet = sheets.matchesSheet;
+  client.alliancesSheet = sheets.alliancesSheet;
+  client.playoffsSheet = sheets.playoffsSheet;
 });
 
 // Register bot slash commands.

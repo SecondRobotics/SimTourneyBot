@@ -8,7 +8,11 @@ const codeBlock = (str: string) => `\`\`\`\n${str}\n\`\`\``;
  * @param guild server to send the embed to
  * @param match object containing match data
  */
-export async function sendMatchResultEmbed(guild: Guild, match: Match) {
+async function sendMatchResultEmbed(
+  guild: Guild,
+  match: Match,
+  matchTitle: string
+) {
   // Get the channel to send the embed to
   const channel = guild.channels.cache.get(process.env.DISCORD_CHANNEL_ID);
 
@@ -38,15 +42,30 @@ export async function sendMatchResultEmbed(guild: Guild, match: Match) {
     color = 0x0000ff;
   }
 
+  const {
+    redAuto,
+    redTeleop,
+    redChargeStation,
+    redPenalty,
+    redGamePieces,
+    redRP,
+    blueAuto,
+    blueTeleop,
+    blueChargeStation,
+    bluePenalty,
+    blueGamePieces,
+    blueRP,
+  } = match;
+
   const breakdown = codeBlock(
     [
-      [match.redAuto, " |      auto       | ", match.blueAuto],
-      [match.redTeleop, " |     teleop      | ", match.blueTeleop],
-      [match.redEnd, " |     endgame     | ", match.blueEnd],
-      [match.redPenalty, " |    penalties    | ", match.bluePenalty],
-      [match.redGamePieces, " |   game pieces   | ", match.blueGamePieces],
+      [redAuto, " |      auto       | ", blueAuto],
+      [redTeleop, " |     teleop      | ", blueTeleop],
+      [redChargeStation, " | charge station  | ", blueChargeStation],
+      [redPenalty, " |    penalties    | ", bluePenalty],
+      [redGamePieces, " |   game pieces   | ", blueGamePieces],
       ["", " |                 | ", ""],
-      [match.redRP, " | ranking points  | ", match.blueRP],
+      [redRP, " | ranking points  | ", blueRP],
     ]
       .map(
         (x) =>
@@ -60,7 +79,7 @@ export async function sendMatchResultEmbed(guild: Guild, match: Match) {
   const embed = new EmbedBuilder()
     .setColor(color)
     .setTitle(
-      `Match ${match.matchNumber} Results            ${match.redScore
+      `${matchTitle.padEnd(24, " ")} ${match.redScore
         .toString()
         .padEnd(3, " ")} - ${match.blueScore.toString().padEnd(3, " ")}`
     )
@@ -74,4 +93,18 @@ export async function sendMatchResultEmbed(guild: Guild, match: Match) {
   if (channel?.isTextBased()) {
     await channel.send({ embeds: [embed] });
   }
+}
+
+export async function sendQualMatchEmbed(guild: Guild, match: Match) {
+  await sendMatchResultEmbed(guild, match, `Qual ${match.matchNumber} Results`);
+}
+
+export async function sendPlayoffMatchEmbed(guild: Guild, match: Match) {
+  await sendMatchResultEmbed(
+    guild,
+    match,
+    match.matchNumber > 13
+      ? `Finals ${match.matchNumber - 13} Results`
+      : `Playoff ${match.matchNumber} Results`
+  );
 }
