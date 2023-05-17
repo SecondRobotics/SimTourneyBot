@@ -10,7 +10,7 @@ import path from "path";
 export const registerEvents = (client: Client) => {
   const eventFiles = fs
     .readdirSync(path.join(__dirname, "events"))
-    .filter((file) => file.endsWith(".ts"));
+    .filter((file) => file.endsWith(".ts") || file.endsWith(".js"));
 
   for (const file of eventFiles) {
     const filePath = path.join(__dirname, "events", file);
