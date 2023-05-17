@@ -60,6 +60,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
       interaction.client.playoffMatchesSheet
     );
     matchNumber = playoffMatches.matchNumber;
+    row = playoffMatches.row;
     matchType = "Playoff";
   }
 
@@ -75,8 +76,8 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     matchNumber = matchNumberOption;
     row = await getMatch(
       matchType === "Qual"
-        ? interaction.client.scheduleSheet
-        : interaction.client.playoffScheduleSheet,
+        ? interaction.client.matchesSheet
+        : interaction.client.playoffMatchesSheet,
       matchNumber
     );
   }

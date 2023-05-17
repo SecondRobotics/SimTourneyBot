@@ -149,7 +149,7 @@ export async function getSoonestUnplayedMatch(
   if (!row || row["Red 1"] === "TBD" || row["Blue 1"] === "TBD") {
     return { row: null, matchNumber: null, secondMatchNumber: null };
   }
-  const matchNumber = row["Match Number"] as number;
+  const matchNumber = parseInt(row["Match Number"]);
 
   const secondRow = rows.find(
     (r) =>
@@ -158,7 +158,7 @@ export async function getSoonestUnplayedMatch(
   const secondMatchNumber =
     !secondRow || secondRow["Red 1"] === "TBD" || secondRow["Blue 1"] === "TBD"
       ? null
-      : (secondRow["Match Number"] as number);
+      : parseInt(secondRow["Match Number"]);
 
   return { row, matchNumber, secondMatchNumber };
 }
