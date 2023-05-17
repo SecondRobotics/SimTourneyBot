@@ -77,7 +77,9 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     const res = await summonPlayersForMatch(
       matchType,
       secondMatchNumber,
-      interaction.client.scheduleSheet,
+      matchType === "Qual"
+        ? interaction.client.scheduleSheet
+        : interaction.client.playoffScheduleSheet,
       interaction.guild,
       true
     );
