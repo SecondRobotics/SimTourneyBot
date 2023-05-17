@@ -66,9 +66,30 @@ export async function setupConnection() {
     });
   }
 
-  let playoffsSheet = doc.sheetsByTitle["Playoff Matches"];
-  if (!playoffsSheet) {
-    playoffsSheet = await doc.addSheet({
+  let playoffScheduleSheet = doc.sheetsByTitle["Playoff Schedule"];
+  if (!playoffScheduleSheet) {
+    playoffScheduleSheet = await doc.addSheet({
+      title: "Playoff Schedule",
+      gridProperties: {
+        columnCount: 7,
+        frozenRowCount: 1,
+        rowCount: 2,
+      },
+      headerValues: [
+        "Match Number",
+        "Red 1",
+        "Red 2",
+        "Red 3",
+        "Blue 1",
+        "Blue 2",
+        "Blue 3",
+      ],
+    });
+  }
+
+  let playoffMatchesSheet = doc.sheetsByTitle["Playoff Matches"];
+  if (!playoffMatchesSheet) {
+    playoffMatchesSheet = await doc.addSheet({
       title: "Playoff Matches",
       gridProperties: {
         columnCount: headerValues.length,
@@ -79,7 +100,13 @@ export async function setupConnection() {
     });
   }
 
-  return { matchesSheet, scheduleSheet, alliancesSheet, playoffsSheet };
+  return {
+    matchesSheet,
+    scheduleSheet,
+    alliancesSheet,
+    playoffScheduleSheet,
+    playoffMatchesSheet,
+  };
 }
 
 export async function updateMatch(

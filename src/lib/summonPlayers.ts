@@ -1,4 +1,4 @@
-import { ChannelType, type Guild } from "discord.js";
+import { ChannelType, type GuildBasedChannel, type Guild } from "discord.js";
 import { getMatchPlayers } from "./googleSheet";
 import type { GoogleSpreadsheetWorksheet } from "google-spreadsheet";
 import logger from "../config/logger";
@@ -16,39 +16,51 @@ export async function summonPlayersForMatch(
   }
 
   // Get the match data from the schedule sheet (discord ids)
-  const players = await getMatchPlayers(scheduleSheet, matchNumber);
-
-  // Find the voice channels for this match
-  // Voice channels are named "🔴 Match _" and "🔵 Match _"
-  let redChannel = guild?.channels.cache.find(
-    (channel) =>
-      channel.type === ChannelType.GuildVoice &&
-      channel.name === `🔴 Match ${matchNumber}`
-  );
-  let blueChannel = guild?.channels.cache.find(
-    (channel) =>
-      channel.type === ChannelType.GuildVoice &&
-      channel.name === `🔵 Match ${matchNumber}`
-  );
-
-  // If the voice channels don't exist, create them (in category id process.env.DISCORD_CATEGORY_ID)
-  if (!redChannel) {
-    redChannel = await guild?.channels.create({
-      name: `🔴 Match ${matchNumber}`,
-      type: ChannelType.GuildVoice,
-      parent: process.env.DISCORD_CATEGORY_ID,
-    });
-  }
-  if (!blueChannel) {
-    blueChannel = await guild?.channels.create({
-      name: `🔵 Match ${matchNumber}`,
-      type: ChannelType.GuildVoice,
-      parent: process.env.DISCORD_CATEGORY_ID,
-    });
+  let players: string[];
+  try {
+    players = await getMatchPlayers(scheduleSheet, matchNumber);
+  } catch (e) {
+    logger.error(e);
+    return "⚠️ Failed to get the match from the schedule sheet!";
   }
 
-  if (!redChannel || !blueChannel) {
-    return "⚠️ Failed to create voice channels!";
+  const handleVoice = matchType === "Qual";
+  let redChannel: GuildBasedChannel | undefined;
+  let blueChannel: GuildBasedChannel | undefined;
+
+  if (handleVoice) {
+    // Find the voice channels for this match
+    // Voice channels are named "🔴 Match _" and "🔵 Match _"
+    redChannel = guild?.channels.cache.find(
+      (channel) =>
+        channel.type === ChannelType.GuildVoice &&
+        channel.name === `🔴 Match ${matchNumber}`
+    );
+    blueChannel = guild?.channels.cache.find(
+      (channel) =>
+        channel.type === ChannelType.GuildVoice &&
+        channel.name === `🔵 Match ${matchNumber}`
+    );
+
+    // If the voice channels don't exist, create them (in category id process.env.DISCORD_CATEGORY_ID)
+    if (!redChannel) {
+      redChannel = await guild?.channels.create({
+        name: `🔴 Match ${matchNumber}`,
+        type: ChannelType.GuildVoice,
+        parent: process.env.DISCORD_CATEGORY_ID,
+      });
+    }
+    if (!blueChannel) {
+      blueChannel = await guild?.channels.create({
+        name: `🔵 Match ${matchNumber}`,
+        type: ChannelType.GuildVoice,
+        parent: process.env.DISCORD_CATEGORY_ID,
+      });
+    }
+
+    if (!redChannel || !blueChannel) {
+      return "⚠️ Failed to create voice channels!";
+    }
   }
 
   // Move players into the voice channels and send them a DM
@@ -57,27 +69,31 @@ export async function summonPlayersForMatch(
     const member = await guild?.members.fetch(player);
     if (member) {
       if (i < 3) {
-        if (member.voice.channel)
+        if (member.voice.channel && redChannel)
           await member.voice
             .setChannel(redChannel.id)
             .catch(() => logger.error(`Failed to move ${member.user.tag}`));
+        const server = redChannel ? `<#${redChannel.id}>.` : `the game server`;
         await member
           .send(
             onDeck
-              ? `🔴 You are on deck for match ${matchNumber}, where you will be playing on the red alliance! Please join <#${redChannel.id}>.`
-              : `🔴 You are up in match ${matchNumber} on the red alliance! Please join <#${redChannel.id}>.`
+              ? `🔴 You are on deck for ${matchType} Match ${matchNumber}, where you will be playing on the red alliance! Please join ${server}.`
+              : `🔴 You are up in ${matchType} Match ${matchNumber} on the red alliance! Please join ${server}.`
           )
           .catch(() => logger.error(`Failed to send DM to ${member.user.tag}`));
       } else {
-        if (member.voice.channel)
+        if (member.voice.channel && blueChannel)
           await member.voice
             .setChannel(blueChannel.id)
             .catch(() => logger.error(`Failed to move ${member.user.tag}`));
+        const server = blueChannel
+          ? `<#${blueChannel.id}>.`
+          : `the game server`;
         await member
           .send(
             onDeck
-              ? `🔵 You are on deck for match ${matchNumber}, where you will be playing on the blue alliance! Please join <#${blueChannel.id}>.`
-              : `🔵 You are up in match ${matchNumber} on the blue alliance! Please join <#${blueChannel.id}>.`
+              ? `🔵 You are on deck for ${matchType} Match ${matchNumber}, where you will be playing on the blue alliance! Please join ${server}.`
+              : `🔵 You are up in ${matchType} Match ${matchNumber} on the blue alliance! Please join ${server}.`
           )
           .catch(() => logger.error(`Failed to send DM to ${member.user.tag}`));
       }

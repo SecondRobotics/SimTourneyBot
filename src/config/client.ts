@@ -17,6 +17,7 @@ declare module "discord.js" {
     scheduleSheet: GoogleSpreadsheetWorksheet;
     matchesSheet: GoogleSpreadsheetWorksheet;
     alliancesSheet: GoogleSpreadsheetWorksheet;
-    playoffsSheet: GoogleSpreadsheetWorksheet;
+    playoffScheduleSheet: GoogleSpreadsheetWorksheet;
+    playoffMatchesSheet: GoogleSpreadsheetWorksheet;
   }
 }

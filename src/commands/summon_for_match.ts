@@ -12,6 +12,16 @@ export const data = new SlashCommandBuilder()
   .setDescription("Summon players into voice channels for a match")
   .setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles)
   .setDMPermission(false)
+  .addStringOption((option) =>
+    option
+      .setName("match_type")
+      .setDescription("The type of match to summon players for")
+      .setRequired(false)
+      .setChoices(
+        { name: "Qual", value: "Qual" },
+        { name: "Playoff", value: "Playoff" }
+      )
+  )
   .addIntegerOption((option) =>
     option
       .setName("match")
@@ -28,7 +38,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
   let matchType: "Qual" | "Playoff" = "Qual";
   if (!nextMatchNumber) {
     const playoffMatches = await getSoonestUnplayedMatch(
-      interaction.client.playoffsSheet
+      interaction.client.playoffMatchesSheet
     );
     nextMatchNumber = playoffMatches.matchNumber;
     secondMatchNumber = playoffMatches.secondMatchNumber;
@@ -42,10 +52,18 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     matchNumber = matchNumberOption;
   }
 
+  // If the user specified a match type, use that instead
+  const matchTypeOption = interaction.options.getString("match_type");
+  if (matchTypeOption) {
+    matchType = matchTypeOption as "Qual" | "Playoff";
+  }
+
   const res = await summonPlayersForMatch(
     matchType,
     matchNumber,
-    interaction.client.scheduleSheet,
+    matchType === "Qual"
+      ? interaction.client.scheduleSheet
+      : interaction.client.playoffScheduleSheet,
     interaction.guild
   );
   if (res) {
@@ -65,11 +83,13 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     );
     if (!res) {
       await interaction.followUp(
-        `✅ Summoned players for matches ${nextMatchNumber} and ${secondMatchNumber}!`
+        `✅ Summoned players for ${matchType} matches ${nextMatchNumber} and ${secondMatchNumber}!`
       );
       return;
     }
   }
 
-  await interaction.editReply(`✅ Summoned players for match ${matchNumber}!`);
+  await interaction.editReply(
+    `✅ Summoned players for ${matchType} match ${matchNumber}!`
+  );
 };

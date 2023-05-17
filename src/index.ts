@@ -14,7 +14,8 @@ setupGoogleSheets().then((sheets) => {
   client.scheduleSheet = sheets.scheduleSheet;
   client.matchesSheet = sheets.matchesSheet;
   client.alliancesSheet = sheets.alliancesSheet;
-  client.playoffsSheet = sheets.playoffsSheet;
+  client.playoffScheduleSheet = sheets.playoffScheduleSheet;
+  client.playoffMatchesSheet = sheets.playoffMatchesSheet;
 });
 
 // Register bot slash commands.
