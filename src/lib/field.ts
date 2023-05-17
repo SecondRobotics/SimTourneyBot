@@ -119,12 +119,14 @@ export async function getMatchData(
     rpBlueBonus + (scoreBlue > scoreRed ? 2 : scoreBlue === scoreRed ? 1 : 0);
 
   // Calculate tiebreakers
-  const penaltyRed = parseInt(
-    await fs.readFile(`${dataDirectory}/Fouls_R.txt`, "utf8")
-  );
-  const penaltyBlue = parseInt(
-    await fs.readFile(`${dataDirectory}/Fouls_B.txt`, "utf8")
-  );
+  const penaltyRed =
+    (parseInt(await fs.readFile(`${dataDirectory}/Fouls_R.txt`, "utf8")) +
+      parseInt(await fs.readFile(`${dataDirectory}/Resets_R.txt`, "utf8"))) *
+    5;
+  const penaltyBlue =
+    (parseInt(await fs.readFile(`${dataDirectory}/Fouls_B.txt`, "utf8")) +
+      parseInt(await fs.readFile(`${dataDirectory}/Resets_B.txt`, "utf8"))) *
+    5;
 
   const tiebreakerRed = scoreRed - penaltyRed;
   const tiebreakerBlue = scoreBlue - penaltyBlue;
