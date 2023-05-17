@@ -73,7 +73,7 @@ export async function summonPlayersForMatch(
           await member.voice
             .setChannel(redChannel.id)
             .catch(() => logger.error(`Failed to move ${member.user.tag}`));
-        const server = redChannel ? `<#${redChannel.id}>.` : `the game server`;
+        const server = redChannel ? `<#${redChannel.id}>` : `the game server`;
         await member
           .send(
             onDeck
@@ -86,9 +86,7 @@ export async function summonPlayersForMatch(
           await member.voice
             .setChannel(blueChannel.id)
             .catch(() => logger.error(`Failed to move ${member.user.tag}`));
-        const server = blueChannel
-          ? `<#${blueChannel.id}>.`
-          : `the game server`;
+        const server = blueChannel ? `<#${blueChannel.id}>` : `the game server`;
         await member
           .send(
             onDeck
