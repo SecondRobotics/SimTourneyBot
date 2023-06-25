@@ -2,10 +2,10 @@
 
 A Discord bot for running simulation robotics tournaments in xRC Sim. Designed to expedite and simplify the process of running tournaments, and to provide a better experience for competitors.
 
-- [x] Generates match schedules and player lists.
-- [x] Creates voice channels for each match and moves players into them.
-- [x] Saves match results from xRC Simulator games to a Google Sheet.
-- [x] Notifies players of upcoming matches and results via Discord.
+- Generates match schedules and player lists.
+- Creates voice channels for each match and moves players into them.
+- Saves match results from xRC Simulator games to a Google Sheet.
+- Notifies players of upcoming matches and results via Discord.
 
 To be used for competitions and tournaments in the Unity-based game [xRC Simulator](http://xrcsimulator.org/). Used in online [SRC events](https://secondrobotics.org).
 

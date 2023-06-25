@@ -1,5 +1,6 @@
 import { EmbedBuilder, type Guild } from "discord.js";
 import type { Match } from "./match";
+import { PLAYOFF_MATCHES_BEFORE_FINALS } from "./field";
 
 const codeBlock = (str: string) => `\`\`\`\n${str}\n\`\`\``;
 
@@ -103,8 +104,8 @@ export async function sendPlayoffMatchEmbed(guild: Guild, match: Match) {
   await sendMatchResultEmbed(
     guild,
     match,
-    match.matchNumber > 13
-      ? `Finals ${match.matchNumber - 13} Results`
+    match.matchNumber > PLAYOFF_MATCHES_BEFORE_FINALS
+      ? `Finals ${match.matchNumber - PLAYOFF_MATCHES_BEFORE_FINALS} Results`
       : `Playoff ${match.matchNumber} Results`
   );
 }
