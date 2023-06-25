@@ -6,7 +6,7 @@ import type { Match } from "./match";
 export const SUSTAINABILITY_BONUS_RP = 9;
 export const ACTIVATION_BONUS_RP = 32;
 
-export const PLAYOFF_MATCHES_BEFORE_FINALS = 13;
+export const PLAYOFF_MATCHES_BEFORE_FINALS = 21;
 
 export async function getMatchData(
   scheduledMatch: GoogleSpreadsheetRow,
