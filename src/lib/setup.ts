@@ -12,7 +12,9 @@ export async function setupGoogleSheets() {
   }
 
   const sheetsUrl = `https://docs.google.com/spreadsheets/d/${process.env.GOOGLE_SHEET_DOC_ID}`;
-  logger.info(`Connected to Google Sheets at ${sheetsUrl}`);
+  logger.info(
+    `Connected to Google Sheets at ${sheets.sheetTitle} (${sheetsUrl})`
+  );
 
   return sheets;
 }

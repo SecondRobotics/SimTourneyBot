@@ -106,6 +106,7 @@ export async function setupConnection() {
     alliancesSheet,
     playoffScheduleSheet,
     playoffMatchesSheet,
+    sheetTitle: doc.title,
   };
 }
 
