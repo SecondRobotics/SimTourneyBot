@@ -3,6 +3,11 @@ import {
   sendQualMatchEmbed as chargedUpSendQualMatchEmbed,
   sendPlayoffMatchEmbed as chargedUpSendPlayoffMatchEmbed,
 } from "./chargedUp";
+import {
+  sendQualMatchEmbed as crescendoSendQualMatchEmbed,
+  sendPlayoffMatchEmbed as crescendoSendPlayoffMatchEmbed,
+} from "./crescendo";
+
 import type { Match } from "../match";
 
 let gameSendQualMatchEmbed: (guild: Guild, match: never) => void;
@@ -10,9 +15,13 @@ let gameSendPlayoffMatchEmbed: (guild: Guild, match: never) => void;
 
 switch (process.env.GAME_NAME) {
   case "CHARGED UP":
-  default:
     gameSendQualMatchEmbed = chargedUpSendQualMatchEmbed;
     gameSendPlayoffMatchEmbed = chargedUpSendPlayoffMatchEmbed;
+    break;
+  case "CRESCENDO":
+  default:
+    gameSendQualMatchEmbed = crescendoSendQualMatchEmbed;
+    gameSendPlayoffMatchEmbed = crescendoSendPlayoffMatchEmbed;
     break;
 }
 
