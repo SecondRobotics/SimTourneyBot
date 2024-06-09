@@ -1,6 +1,6 @@
 import { EmbedBuilder, type Guild } from "discord.js";
-import type { Match } from "./match";
-import { PLAYOFF_MATCHES_BEFORE_FINALS } from "./field";
+import type { Match } from "../match";
+import { PLAYOFF_MATCHES_BEFORE_FINALS } from "../field";
 
 const codeBlock = (str: string) => `\`\`\`\n${str}\n\`\`\``;
 

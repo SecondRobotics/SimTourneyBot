@@ -1,12 +1,10 @@
 import fs from "fs/promises";
 import fsSync from "fs";
 import type { GoogleSpreadsheetRow } from "google-spreadsheet";
-import type { Match } from "./match";
+import type { Match } from "../match/chargedUp";
 
-export const SUSTAINABILITY_BONUS_RP = 9;
-export const ACTIVATION_BONUS_RP = 32;
-
-export const PLAYOFF_MATCHES_BEFORE_FINALS = 13;
+const SUSTAINABILITY_BONUS_RP = 9;
+const ACTIVATION_BONUS_RP = 32;
 
 export async function getMatchData(
   scheduledMatch: GoogleSpreadsheetRow,
@@ -172,20 +170,4 @@ export async function getMatchData(
   };
 
   return match;
-}
-
-export async function setMatchNumber(matchType: string, matchNumber: number) {
-  const type =
-    matchType === "Qual"
-      ? "Quals"
-      : matchNumber > PLAYOFF_MATCHES_BEFORE_FINALS
-      ? "Finals"
-      : "Playoff";
-
-  fsSync.existsSync("TourneyData/") || (await fs.mkdir("TourneyData/"));
-  await fs.writeFile("TourneyData/MatchNumber.txt", `${type} ${matchNumber}`);
-  await fs.writeFile(
-    "TourneyData/PrevMatchNumber.txt",
-    `${type} ${matchNumber - 1}`
-  );
 }
