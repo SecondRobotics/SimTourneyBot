@@ -75,6 +75,8 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     String(rounds),
     quality,
     "-q",
+    "-a",
+    String(process.env.TEAMS_PER_ALLIANCE),
   ]);
 
   // Pipe the output of MatchMaker to a file
