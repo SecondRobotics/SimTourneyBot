@@ -1,10 +1,12 @@
+import type { Guild } from "discord.js";
 import {
   sendQualMatchEmbed as chargedUpSendQualMatchEmbed,
   sendPlayoffMatchEmbed as chargedUpSendPlayoffMatchEmbed,
 } from "./chargedUp";
+import type { Match } from "../match";
 
-let gameSendQualMatchEmbed;
-let gameSendPlayoffMatchEmbed;
+let gameSendQualMatchEmbed: (guild: Guild, match: never) => void;
+let gameSendPlayoffMatchEmbed: (guild: Guild, match: never) => void;
 
 switch (process.env.GAME_NAME) {
   case "CHARGED UP":
@@ -14,5 +16,9 @@ switch (process.env.GAME_NAME) {
     break;
 }
 
-export const sendQualMatchEmbed = gameSendQualMatchEmbed;
-export const sendPlayoffMatchEmbed = gameSendPlayoffMatchEmbed;
+export const sendQualMatchEmbed = (guild: Guild, match: Match) => {
+  return gameSendQualMatchEmbed(guild, match as never);
+};
+export const sendPlayoffMatchEmbed = (guild: Guild, match: Match) => {
+  return gameSendPlayoffMatchEmbed(guild, match as never);
+};

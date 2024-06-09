@@ -2,6 +2,7 @@ import fs from "fs/promises";
 import fsSync from "fs";
 
 import { getMatchData as chargedUpGetMatchData } from "./chargedUp";
+import { getMatchData as crescendoGetMatchData } from "./crescendo";
 
 export const PLAYOFF_MATCHES_BEFORE_FINALS = 13;
 
@@ -25,8 +26,11 @@ let gameGetMatchData;
 
 switch (process.env.GAME_NAME) {
   case "CHARGED UP":
-  default:
     gameGetMatchData = chargedUpGetMatchData;
+    break;
+  case "CRESCENDO":
+  default:
+    gameGetMatchData = crescendoGetMatchData;
     break;
 }
 

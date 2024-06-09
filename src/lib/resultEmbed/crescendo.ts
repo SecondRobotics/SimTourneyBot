@@ -1,5 +1,5 @@
 import { EmbedBuilder, type Guild } from "discord.js";
-import type { Match } from "../match/chargedUp";
+import type { Match } from "../match/crescendo";
 import { PLAYOFF_MATCHES_BEFORE_FINALS } from "../field";
 
 const codeBlock = (str: string) => `\`\`\`\n${str}\n\`\`\``;
@@ -46,13 +46,13 @@ async function sendMatchResultEmbed(
   const {
     redAuto,
     redTeleop,
-    redChargeStation,
+    redEnd,
     redPenalty,
     redGamePieces,
     redRP,
     blueAuto,
     blueTeleop,
-    blueChargeStation,
+    blueEnd,
     bluePenalty,
     blueGamePieces,
     blueRP,
@@ -62,7 +62,7 @@ async function sendMatchResultEmbed(
     [
       [redAuto, " |      auto       | ", blueAuto],
       [redTeleop, " |     teleop      | ", blueTeleop],
-      [redChargeStation, " | charge station  | ", blueChargeStation],
+      [redEnd, " |     endgame     | ", blueEnd],
       [redPenalty, " |    penalties    | ", bluePenalty],
       [redGamePieces, " |   game pieces   | ", blueGamePieces],
       ["", " |                 | ", ""],

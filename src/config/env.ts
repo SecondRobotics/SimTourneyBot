@@ -12,7 +12,7 @@ const envSchema = z.object({
   DISCORD_GUILD_ID: z.string().min(1),
   DISCORD_CHANNEL_ID: z.string().min(1),
   DISCORD_CATEGORY_ID: z.string().min(1),
-  GAME_NAME: z.enum(["CHARGED UP"]),
+  GAME_NAME: z.enum(["CHARGED UP", "CRESCENDO"]),
   TEAMS_PER_ALLIANCE: z.number().int(),
 });
 
