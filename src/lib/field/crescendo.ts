@@ -3,7 +3,7 @@ import fsSync from "fs";
 import type { GoogleSpreadsheetRow } from "google-spreadsheet";
 import type { Match } from "../match/crescendo";
 
-const MELODY_BONUS_RP = 25;
+const MELODY_BONUS_RP = 30;
 const ENSEMBLE_BONUS_RP = 10;
 
 export async function getMatchData(
