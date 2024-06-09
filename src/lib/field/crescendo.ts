@@ -1,12 +1,10 @@
 import fs from "fs/promises";
 import fsSync from "fs";
 import type { GoogleSpreadsheetRow } from "google-spreadsheet";
-import type { Match } from "./match";
+import type { Match } from "../match/crescendo";
 
-export const SUSTAINABILITY_BONUS_RP = 9;
-export const ACTIVATION_BONUS_RP = 32;
-
-export const PLAYOFF_MATCHES_BEFORE_FINALS = 13;
+const MELODY_BONUS_RP = 30;
+const ENSEMBLE_BONUS_RP = 10;
 
 export async function getMatchData(
   scheduledMatch: GoogleSpreadsheetRow,
@@ -54,50 +52,34 @@ export async function getMatchData(
   //   contribBlue[blueIndex] = unsortedContribBlue[i];
   // }
 
-  // Count game pieces
+  // Count game pieces (notes)
   const piecesRed =
-    parseInt(await fs.readFile(`${dataDirectory}/ABotC_R.txt`, "utf8")) +
-    parseInt(await fs.readFile(`${dataDirectory}/AMidC_R.txt`, "utf8")) +
-    parseInt(await fs.readFile(`${dataDirectory}/ATopC_R.txt`, "utf8")) +
-    parseInt(await fs.readFile(`${dataDirectory}/TBotC_R.txt`, "utf8")) +
-    parseInt(await fs.readFile(`${dataDirectory}/TMidC_R.txt`, "utf8")) +
-    parseInt(await fs.readFile(`${dataDirectory}/TTopC_R.txt`, "utf8")) +
-    parseInt(await fs.readFile(`${dataDirectory}/TSuper_R.txt`, "utf8"));
+    parseInt(await fs.readFile(`${dataDirectory}/Aamp_R.txt`, "utf8")) +
+    parseInt(await fs.readFile(`${dataDirectory}/Aspeaker_R.txt`, "utf8")) +
+    parseInt(await fs.readFile(`${dataDirectory}/Tamp_R.txt`, "utf8")) +
+    parseInt(await fs.readFile(`${dataDirectory}/Tspeaker_R.txt`, "utf8")) +
+    parseInt(await fs.readFile(`${dataDirectory}/Tspeakeramp_R.txt`, "utf8"));
   const piecesBlue =
-    parseInt(await fs.readFile(`${dataDirectory}/ABotC_B.txt`, "utf8")) +
-    parseInt(await fs.readFile(`${dataDirectory}/AMidC_B.txt`, "utf8")) +
-    parseInt(await fs.readFile(`${dataDirectory}/ATopC_B.txt`, "utf8")) +
-    parseInt(await fs.readFile(`${dataDirectory}/TBotC_B.txt`, "utf8")) +
-    parseInt(await fs.readFile(`${dataDirectory}/TMidC_B.txt`, "utf8")) +
-    parseInt(await fs.readFile(`${dataDirectory}/TTopC_B.txt`, "utf8")) +
-    parseInt(await fs.readFile(`${dataDirectory}/TSuper_B.txt`, "utf8"));
+    parseInt(await fs.readFile(`${dataDirectory}/Aamp_B.txt`, "utf8")) +
+    parseInt(await fs.readFile(`${dataDirectory}/Aspeaker_B.txt`, "utf8")) +
+    parseInt(await fs.readFile(`${dataDirectory}/Tamp_B.txt`, "utf8")) +
+    parseInt(await fs.readFile(`${dataDirectory}/Tspeaker_B.txt`, "utf8")) +
+    parseInt(await fs.readFile(`${dataDirectory}/Tspeakeramp_B.txt`, "utf8"));
 
   // Calculate endgame points
-  const endRed =
-    parseInt(await fs.readFile(`${dataDirectory}/TParkC_R.txt`, "utf8")) * 2 +
-    parseInt(await fs.readFile(`${dataDirectory}/TDockC_R.txt`, "utf8")) * 6 +
-    parseInt(await fs.readFile(`${dataDirectory}/TEngC_R.txt`, "utf8")) * 10;
-  const endBlue =
-    parseInt(await fs.readFile(`${dataDirectory}/TParkC_B.txt`, "utf8")) * 2 +
-    parseInt(await fs.readFile(`${dataDirectory}/TDockC_B.txt`, "utf8")) * 6 +
-    parseInt(await fs.readFile(`${dataDirectory}/TEngC_B.txt`, "utf8")) * 10;
-
-  // Calculate charge station points
-  const chargeRed =
-    endRed +
-    parseInt(await fs.readFile(`${dataDirectory}/ADockC_R.txt`, "utf8")) * 8 +
-    parseInt(await fs.readFile(`${dataDirectory}/AEngC_R.txt`, "utf8")) * 12;
-  const chargeBlue =
-    endBlue +
-    parseInt(await fs.readFile(`${dataDirectory}/ADockC_B.txt`, "utf8")) * 8 +
-    parseInt(await fs.readFile(`${dataDirectory}/AEngC_B.txt`, "utf8")) * 12;
-
-  // Count links
-  const linksRed = parseInt(
-    await fs.readFile(`${dataDirectory}/TLinkC_R.txt`, "utf8")
+  const endRed = parseInt(
+    await fs.readFile(`${dataDirectory}/End_R.txt`, "utf8")
   );
-  const linksBlue = parseInt(
-    await fs.readFile(`${dataDirectory}/TLinkC_B.txt`, "utf8")
+  const endBlue = parseInt(
+    await fs.readFile(`${dataDirectory}/End_B.txt`, "utf8")
+  );
+
+  // Calculate auto points
+  const autoRed = parseInt(
+    await fs.readFile(`${dataDirectory}/Auto_R.txt`, "utf8")
+  );
+  const autoBlue = parseInt(
+    await fs.readFile(`${dataDirectory}/Auto_B.txt`, "utf8")
   );
 
   // Calculate ranking points
@@ -109,14 +91,14 @@ export async function getMatchData(
   );
 
   const rpRedBonus =
-    (linksRed >= SUSTAINABILITY_BONUS_RP ? 1 : 0) +
-    (chargeRed >= ACTIVATION_BONUS_RP ? 1 : 0);
+    (piecesRed >= MELODY_BONUS_RP ? 1 : 0) +
+    (endRed >= ENSEMBLE_BONUS_RP ? 1 : 0);
   const rpRed =
     rpRedBonus + (scoreRed > scoreBlue ? 2 : scoreRed === scoreBlue ? 1 : 0);
 
   const rpBlueBonus =
-    (linksBlue >= SUSTAINABILITY_BONUS_RP ? 1 : 0) +
-    (chargeBlue >= ACTIVATION_BONUS_RP ? 1 : 0);
+    (piecesBlue >= MELODY_BONUS_RP ? 1 : 0) +
+    (endBlue >= ENSEMBLE_BONUS_RP ? 1 : 0);
   const rpBlue =
     rpBlueBonus + (scoreBlue > scoreRed ? 2 : scoreBlue === scoreRed ? 1 : 0);
 
@@ -145,10 +127,8 @@ export async function getMatchData(
     blueScore: scoreBlue,
     redPenalty: penaltyRed,
     bluePenalty: penaltyBlue,
-    redAuto: parseInt(await fs.readFile(`${dataDirectory}/Auto_R.txt`, "utf8")),
-    blueAuto: parseInt(
-      await fs.readFile(`${dataDirectory}/Auto_B.txt`, "utf8")
-    ),
+    redAuto: autoRed,
+    blueAuto: autoBlue,
     redTeleop: parseInt(
       await fs.readFile(`${dataDirectory}/Tele_R.txt`, "utf8")
     ),
@@ -157,10 +137,6 @@ export async function getMatchData(
     ),
     redEnd: endRed,
     blueEnd: endBlue,
-    redLinks: linksRed,
-    blueLinks: linksBlue,
-    redChargeStation: chargeRed,
-    blueChargeStation: chargeBlue,
     redGamePieces: piecesRed,
     blueGamePieces: piecesBlue,
     redRP: rpRed,
@@ -172,20 +148,4 @@ export async function getMatchData(
   };
 
   return match;
-}
-
-export async function setMatchNumber(matchType: string, matchNumber: number) {
-  const type =
-    matchType === "Qual"
-      ? "Quals"
-      : matchNumber > PLAYOFF_MATCHES_BEFORE_FINALS
-      ? "Finals"
-      : "Playoff";
-
-  fsSync.existsSync("TourneyData/") || (await fs.mkdir("TourneyData/"));
-  await fs.writeFile("TourneyData/MatchNumber.txt", `${type} ${matchNumber}`);
-  await fs.writeFile(
-    "TourneyData/PrevMatchNumber.txt",
-    `${type} ${matchNumber - 1}`
-  );
 }

@@ -106,6 +106,7 @@ export async function setupConnection() {
     alliancesSheet,
     playoffScheduleSheet,
     playoffMatchesSheet,
+    sheetTitle: doc.title,
   };
 }
 
@@ -184,12 +185,14 @@ export async function getMatchPlayers(
   const row = await getMatch(scheduleSheet, matchNumber);
 
   return [
-    row["Red 1"],
-    row["Red 2"],
-    row["Red 3"],
-    row["Blue 1"],
-    row["Blue 2"],
-    row["Blue 3"],
+    ...Array.from(
+      { length: process.env.TEAMS_PER_ALLIANCE },
+      (_, i) => row[`Red ${i + 1}`]
+    ),
+    ...Array.from(
+      { length: process.env.TEAMS_PER_ALLIANCE },
+      (_, i) => row[`Blue ${i + 1}`]
+    ),
   ];
 }
 
@@ -218,20 +221,20 @@ export async function copyScheduleToMatchesSheet(
     if (!matchRow) {
       await matchesSheet.addRow([
         matchNumber,
-        players.get(row["Red 1"]),
-        players.get(row["Red 2"]),
-        players.get(row["Red 3"]),
-        players.get(row["Blue 1"]),
-        players.get(row["Blue 2"]),
-        players.get(row["Blue 3"]),
+        players.get(row["Red 1"]) ?? "",
+        players.get(row["Red 2"]) ?? "",
+        players.get(row["Red 3"]) ?? "",
+        players.get(row["Blue 1"]) ?? "",
+        players.get(row["Blue 2"]) ?? "",
+        players.get(row["Blue 3"]) ?? "",
       ]);
     } else {
-      matchRow["Red 1"] = players.get(row["Red 1"]);
-      matchRow["Red 2"] = players.get(row["Red 2"]);
-      matchRow["Red 3"] = players.get(row["Red 3"]);
-      matchRow["Blue 1"] = players.get(row["Blue 1"]);
-      matchRow["Blue 2"] = players.get(row["Blue 2"]);
-      matchRow["Blue 3"] = players.get(row["Blue 3"]);
+      matchRow["Red 1"] = players.get(row["Red 1"]) ?? "";
+      matchRow["Red 2"] = players.get(row["Red 2"]) ?? "";
+      matchRow["Red 3"] = players.get(row["Red 3"]) ?? "";
+      matchRow["Blue 1"] = players.get(row["Blue 1"]) ?? "";
+      matchRow["Blue 2"] = players.get(row["Blue 2"]) ?? "";
+      matchRow["Blue 3"] = players.get(row["Blue 3"]) ?? "";
       await matchRow.save();
     }
   }
@@ -249,12 +252,10 @@ export async function postSchedule(
   for (const match of schedule) {
     const row = rows.find((r) => r["Match Number"] == match.number);
     if (row) {
-      row["Red 1"] = match.teams[0];
-      row["Red 2"] = match.teams[1];
-      row["Red 3"] = match.teams[2];
-      row["Blue 1"] = match.teams[3];
-      row["Blue 2"] = match.teams[4];
-      row["Blue 3"] = match.teams[5];
+      for (let i = 0; i < process.env.TEAMS_PER_ALLIANCE; i++) {
+        row[`Red ${i + 1}`] = match.teams[i];
+        row[`Blue ${i + 1}`] = match.teams[i + process.env.TEAMS_PER_ALLIANCE];
+      }
       row["Discord Ids"] = playerIds[i];
       row["Display Names"] = playerNames[i];
 
@@ -262,12 +263,10 @@ export async function postSchedule(
     } else {
       await scheduleSheet.addRow([
         match.number,
-        match.teams[0],
-        match.teams[1],
-        match.teams[2],
-        match.teams[3],
-        match.teams[4],
-        match.teams[5],
+        ...match.teams.slice(0, process.env.TEAMS_PER_ALLIANCE),
+        ...Array.from({ length: 3 - process.env.TEAMS_PER_ALLIANCE }, () => ""),
+        ...match.teams.slice(process.env.TEAMS_PER_ALLIANCE),
+        ...Array.from({ length: 3 - process.env.TEAMS_PER_ALLIANCE }, () => ""),
         "",
         playerIds[i],
         playerNames[i],
