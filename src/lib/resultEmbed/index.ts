@@ -7,6 +7,10 @@ import {
   sendQualMatchEmbed as crescendoSendQualMatchEmbed,
   sendPlayoffMatchEmbed as crescendoSendPlayoffMatchEmbed,
 } from "./crescendo";
+import {
+  sendQualMatchEmbed as rapidReactSendQualMatchEmbed,
+  sendPlayoffMatchEmbed as rapidReactSendPlayoffMatchEmbed,
+} from "./rapidReact";
 
 import type { Match } from "../match";
 
@@ -14,6 +18,10 @@ let gameSendQualMatchEmbed: (guild: Guild, match: never) => void;
 let gameSendPlayoffMatchEmbed: (guild: Guild, match: never) => void;
 
 switch (process.env.GAME_NAME) {
+  case "RAPID REACT":
+    gameSendQualMatchEmbed = rapidReactSendQualMatchEmbed;
+    gameSendPlayoffMatchEmbed = rapidReactSendPlayoffMatchEmbed;
+    break;
   case "CHARGED UP":
     gameSendQualMatchEmbed = chargedUpSendQualMatchEmbed;
     gameSendPlayoffMatchEmbed = chargedUpSendPlayoffMatchEmbed;

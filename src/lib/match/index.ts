@@ -13,11 +13,23 @@ import {
   saveMatchToRow as crescendoSaveMatchToRow,
 } from "./crescendo";
 
+import {
+  type Match as rapidReactMatch,
+  headerValues as rapidReactHeaderValues,
+  matchToArray as rapidReactMatchToArray,
+  saveMatchToRow as rapidReactSaveMatchToRow,
+} from "./rapidReact";
+
 let gameHeaderValues: string[];
 let gameMatchToArray: (match: never) => (string | number)[];
 let gameSaveMatchToRow: (match: never, row: GoogleSpreadsheetRow) => void;
 
 switch (process.env.GAME_NAME) {
+  case "RAPID REACT":
+    gameHeaderValues = rapidReactHeaderValues;
+    gameMatchToArray = rapidReactMatchToArray;
+    gameSaveMatchToRow = rapidReactSaveMatchToRow;
+    break;
   case "CHARGED UP":
     gameHeaderValues = chargedUpHeaderValues;
     gameMatchToArray = chargedUpMatchToArray;
@@ -31,7 +43,7 @@ switch (process.env.GAME_NAME) {
     break;
 }
 
-export type Match = chargedUpMatch | crescendoMatch;
+export type Match = chargedUpMatch | crescendoMatch | rapidReactMatch;
 export const headerValues = gameHeaderValues;
 export const matchToArray = (match: Match) => {
   return gameMatchToArray(match as never);
