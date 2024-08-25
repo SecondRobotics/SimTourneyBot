@@ -4,7 +4,7 @@ import type { GoogleSpreadsheetRow } from "google-spreadsheet";
 import type { Match } from "../match/crescendo";
 
 const MELODY_BONUS_RP = 30;
-const ENSEMBLE_BONUS_RP = 10;
+const ENSEMBLE_BONUS_RP = 15;
 
 export async function getMatchData(
   scheduledMatch: GoogleSpreadsheetRow,
