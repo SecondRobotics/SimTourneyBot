@@ -8,7 +8,7 @@ import { summonPlayersForMatch } from "../lib/summonPlayers";
 import { setMatchNumber } from "../lib/field";
 
 export const data = new SlashCommandBuilder()
-  .setName("summon_for_match")
+  .setName("summon_for_match_2")
   .setDescription("Summon players into voice channels for a match")
   .setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles)
   .setDMPermission(false)

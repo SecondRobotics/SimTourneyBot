@@ -11,7 +11,7 @@ import fetch from "node-fetch";
 import logger from "../config/logger";
 
 export const data = new SlashCommandBuilder()
-  .setName("generate_schedule")
+  .setName("generate_schedule_2")
   .setDescription("Generates a new match schedule for an event")
   .addRoleOption((option) =>
     option

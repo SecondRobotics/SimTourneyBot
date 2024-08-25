@@ -4,7 +4,7 @@ import {
 } from "discord.js";
 
 export const data = new SlashCommandBuilder()
-  .setName("ping")
+  .setName("ping_2")
   .setDescription("Replies with Pong!");
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {

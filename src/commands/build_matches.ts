@@ -6,7 +6,7 @@ import {
 import { buildMatchSheet } from "../lib/saver";
 
 export const data = new SlashCommandBuilder()
-  .setName("build_match_sheet")
+  .setName("build_match_sheet_2")
   .setDescription("Copies the match schedule to the match sheet")
   .setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles)
   .setDMPermission(false);

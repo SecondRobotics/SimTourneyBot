@@ -16,7 +16,7 @@ import { setMatchNumber } from "../lib/field";
 import logger from "../config/logger";
 
 export const data = new SlashCommandBuilder()
-  .setName("save_match_results")
+  .setName("save_match_results_2")
   .setDescription(
     "Save the results of a completed match, and get ready for the next one"
   )

@@ -7,7 +7,7 @@ import {
 import logger from "../config/logger";
 
 export const data = new SlashCommandBuilder()
-  .setName("make_playoff_channels")
+  .setName("make_playoff_channels_2")
   .setDescription("Creates voice channels for each alliance in the playoffs")
   .setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles)
   .addIntegerOption((option) =>

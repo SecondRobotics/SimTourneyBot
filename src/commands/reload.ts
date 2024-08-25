@@ -6,7 +6,7 @@ import {
 import logger from "../config/logger";
 
 export const data = new SlashCommandBuilder()
-  .setName("reload")
+  .setName("reload_2")
   .setDescription("Reloads a command.")
   .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
   .setDMPermission(false)
