@@ -11,6 +11,10 @@ import {
   sendQualMatchEmbed as rapidReactSendQualMatchEmbed,
   sendPlayoffMatchEmbed as rapidReactSendPlayoffMatchEmbed,
 } from "./rapidReact";
+import {
+  sendQualMatchEmbed as reefscapeSendQualMatchEmbed,
+  sendPlayoffMatchEmbed as reefscapeSendPlayoffMatchEmbed,
+} from "./reefscape";
 
 import type { Match } from "../match";
 
@@ -27,9 +31,13 @@ switch (process.env.GAME_NAME) {
     gameSendPlayoffMatchEmbed = chargedUpSendPlayoffMatchEmbed;
     break;
   case "CRESCENDO":
-  default:
     gameSendQualMatchEmbed = crescendoSendQualMatchEmbed;
     gameSendPlayoffMatchEmbed = crescendoSendPlayoffMatchEmbed;
+    break;
+  case "REEFSCAPE":
+  default:
+    gameSendQualMatchEmbed = reefscapeSendQualMatchEmbed;
+    gameSendPlayoffMatchEmbed = reefscapeSendPlayoffMatchEmbed;
     break;
 }
 

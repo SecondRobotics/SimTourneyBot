@@ -4,6 +4,7 @@ import fsSync from "fs";
 import { getMatchData as chargedUpGetMatchData } from "./chargedUp";
 import { getMatchData as crescendoGetMatchData } from "./crescendo";
 import { getMatchData as rapidReactGetMatchData } from "./rapidReact";
+import { getMatchData as reefscapeGetMatchData } from "./reefscape";
 
 export const PLAYOFF_MATCHES_BEFORE_FINALS = 13;
 
@@ -33,8 +34,11 @@ switch (process.env.GAME_NAME) {
     gameGetMatchData = chargedUpGetMatchData;
     break;
   case "CRESCENDO":
-  default:
     gameGetMatchData = crescendoGetMatchData;
+    break;
+  case "REEFSCAPE":
+  default:
+    gameGetMatchData = reefscapeGetMatchData;
     break;
 }
 
