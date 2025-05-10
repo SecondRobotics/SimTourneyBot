@@ -76,13 +76,18 @@ async function sendMatchResultEmbed(
   );
 
   const embed = new EmbedBuilder()
-    .setTitle(matchTitle)
+    .setTitle(
+      `${matchTitle.padEnd(24, " ")} ${match.redScore
+        .toString()
+        .padEnd(3, " ")} - ${match.blueScore.toString().padEnd(3, " ")}`
+    )
     .setColor(color)
     .addFields(
       { name: redAllianceTitle, value: redAlliance, inline: true },
       { name: blueAllianceTitle, value: blueAlliance, inline: true },
       { name: breakdownTitle, value: breakdown, inline: false }
-    );
+    )
+    .setTimestamp();
 
   if (channel?.isTextBased()) {
     await channel.send({ embeds: [embed] });
