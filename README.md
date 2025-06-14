@@ -18,6 +18,7 @@ Powered by [Discord.js](https://discord.js.org/) and [Google Sheets API](https:/
 - You must have a Discord bot application setup with a token.
 - You must have a Google Sheet setup with an API Service Account.
 - You must have a `.env` file in the root of the project, see [`.env.example`](./.env.example) for an example.
+- Download MatchMaker using the instructions [here](https://github.com/SecondRobotics/SimTourneyBot/wiki/Setting-up-MatchMaker-for-schedule-generation).
 - Clone this repository and run `npm install` to install dependencies. Then run `npm run build` to build the project, and `npm start` to start the bot.
 - Use `npm run dev` to start the bot in development mode. Use `npm run lint` to lint the code.
 
