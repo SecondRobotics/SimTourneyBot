@@ -6,6 +6,7 @@ import {
 import { spawn } from "child_process";
 import fs from "fs/promises";
 import fsSync from "fs";
+import path from "path";
 import { postSchedule } from "../lib/googleSheet";
 import fetch from "node-fetch";
 import logger from "../config/logger";
@@ -68,7 +69,11 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
   );
 
   // Call MatchMaker by Idle Loop to generate a schedule
-  const matchMaker = spawn("./MatchMaker", [
+  const matchMakerPath = path.join(
+    process.cwd(),
+    `MatchMaker${process.platform === "win32" ? ".exe" : ""}`
+  );
+  const matchMaker = spawn(matchMakerPath, [
     "-t",
     String(participantCount),
     "-r",
@@ -80,12 +85,20 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
   ]);
 
   // Pipe the output of MatchMaker to a file
-  const out = fsSync.createWriteStream("./schedule.txt");
-  matchMaker.stdout.pipe(out);
+  const schedulePath = path.join(process.cwd(), "schedule.txt");
+  const out = fsSync.createWriteStream(schedulePath);
+  matchMaker.stdout.pipe(out as any);
 
-  // Wait for MatchMaker to finish
+  // Wait for MatchMaker to finish or timeout after 15 seconds
   await new Promise((resolve) => {
-    matchMaker.once("close", resolve);
+    const timeout = setTimeout(() => {
+      resolve(undefined);
+    }, 15000);
+
+    matchMaker.once("close", () => {
+      clearTimeout(timeout);
+      resolve(undefined);
+    });
   });
 
   interaction.editReply(
@@ -93,7 +106,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
   );
 
   // Handle the output of MatchMaker
-  const schedule = await fs.readFile("./schedule.txt", "utf-8");
+  const schedule = await fs.readFile(schedulePath, "utf-8");
   const lines = schedule.split("\n");
 
   let i = 0;
@@ -118,7 +131,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
   }
 
   // Delete the schedule file
-  await fs.unlink("./schedule.txt");
+  await fs.unlink(schedulePath);
 
   // Create list of discord user ids and display names
   const playerIds = players.map((player) => player.id);
