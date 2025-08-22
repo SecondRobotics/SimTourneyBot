@@ -43,20 +43,16 @@ export async function summonPlayersForMatch(
     );
 
     // If the voice channels don't exist, create them (in category id process.env.DISCORD_CATEGORY_ID)
-    if (!redChannel) {
-      redChannel = await guild?.channels.create({
-        name: `🔴 Match ${matchNumber}`,
-        type: ChannelType.GuildVoice,
-        parent: process.env.DISCORD_CATEGORY_ID,
-      });
-    }
-    if (!blueChannel) {
-      blueChannel = await guild?.channels.create({
-        name: `🔵 Match ${matchNumber}`,
-        type: ChannelType.GuildVoice,
-        parent: process.env.DISCORD_CATEGORY_ID,
-      });
-    }
+    redChannel ??= await guild?.channels.create({
+      name: `🔴 Match ${matchNumber}`,
+      type: ChannelType.GuildVoice,
+      parent: process.env.DISCORD_CATEGORY_ID,
+    });
+    blueChannel ??= await guild?.channels.create({
+      name: `🔵 Match ${matchNumber}`,
+      type: ChannelType.GuildVoice,
+      parent: process.env.DISCORD_CATEGORY_ID,
+    });
 
     if (!redChannel || !blueChannel) {
       return "⚠️ Failed to create voice channels!";

@@ -191,12 +191,25 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     interaction.guild
   );
   if (res) {
-    await setMatchNumber(matchType, matchNumber + 1);
+    await setMatchNumber(
+      matchType,
+      matchNumber + 1,
+      matchType === "Qual"
+        ? interaction.client.matchesSheet
+        : interaction.client.playoffMatchesSheet
+    );
     await interaction.followUp(res);
     return;
   }
 
-  if (nextMatchNumber) await setMatchNumber(matchType, nextMatchNumber);
+  if (nextMatchNumber)
+    await setMatchNumber(
+      matchType,
+      nextMatchNumber,
+      matchType === "Qual"
+        ? interaction.client.matchesSheet
+        : interaction.client.playoffMatchesSheet
+    );
 
   // If there is a second match, summon players for that one too
   if (secondMatchNumber) {

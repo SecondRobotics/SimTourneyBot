@@ -71,7 +71,14 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  if (matchNumber) await setMatchNumber(matchType, matchNumber);
+  if (matchNumber)
+    await setMatchNumber(
+      matchType,
+      matchNumber,
+      matchType === "Qual"
+        ? interaction.client.matchesSheet
+        : interaction.client.playoffMatchesSheet
+    );
 
   if (matchNumber === nextMatchNumber && secondMatchNumber) {
     const res = await summonPlayersForMatch(
