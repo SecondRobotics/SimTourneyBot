@@ -87,18 +87,41 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
   // Pipe the output of MatchMaker to a file
   const schedulePath = path.join(process.cwd(), "schedule.txt");
   const out = fsSync.createWriteStream(schedulePath);
-  matchMaker.stdout.pipe(out as any);
+  matchMaker.stdout.pipe(out as unknown as NodeJS.WritableStream);
 
-  // Wait for MatchMaker to finish or timeout after 15 seconds
-  await new Promise((resolve) => {
-    const timeout = setTimeout(() => {
-      resolve(undefined);
-    }, 15000);
+  // Wait for MatchMaker to finish or timeout
+  const TIMEOUT_MS = 15000;
 
-    matchMaker.once("close", () => {
-      clearTimeout(timeout);
-      resolve(undefined);
-    });
+  // Resolve when the process exits/closes/errors
+  const waitForExit = new Promise<void>((resolve) => {
+    const done = () => resolve();
+    matchMaker.once("exit", done);
+    matchMaker.once("close", done);
+    matchMaker.once("error", done);
+  });
+
+  // Hard timeout that force-kills the child on Windows/macOS/Linux
+  const timeout = new Promise<void>((resolve) => {
+    const t = setTimeout(() => {
+      if (!matchMaker.killed) {
+        matchMaker.kill("SIGKILL");
+      }
+      resolve();
+    }, TIMEOUT_MS);
+    void waitForExit.then(() => clearTimeout(t));
+  });
+
+  await Promise.race([waitForExit, timeout]);
+
+  // Ensure the output file stream has flushed and closed before reading
+  await new Promise<void>((resolve, reject) => {
+    out.once("finish", () => resolve());
+    out.once("error", (err) => reject(err));
+  });
+  await new Promise<void>((resolve) => {
+    // If already closed, resolve immediately
+    if (out.closed === true) return resolve();
+    out.once("close", () => resolve());
   });
 
   interaction.editReply(
@@ -107,27 +130,29 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
 
   // Handle the output of MatchMaker
   const schedule = await fs.readFile(schedulePath, "utf-8");
-  const lines = schedule.split("\n");
+  const lines = schedule.split(/\r?\n/);
 
   let i = 0;
 
   // Skip over lines until we get to the schedule
-  while (lines[i] !== "--------------") {
+  while ((lines[i] ?? "").trim() !== "--------------") {
     i++;
+    if (i >= lines.length) break;
   }
   i++;
 
   // Read each line of the schedule
   const players = [...participantRole.members.values()];
   const matches = [] as { number: number; teams: string[] }[];
-  while (lines[i] !== "") {
-    const match = lines[i].trim().split(/\s+/);
+  while ((lines[i] ?? "").trim() !== "") {
+    const match = (lines[i] ?? "").trim().split(/\s+/);
 
     const number = parseInt(match.shift()?.replace(":", "") ?? "0");
     const teams = match.map((team) => players[parseInt(team) - 1].id);
 
     matches.push({ number, teams });
     i++;
+    if (i >= lines.length) break;
   }
 
   // Delete the schedule file
@@ -157,18 +182,20 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
   );
 
   // Post the schedule to Google Sheets
-  await postSchedule(
-    interaction.client.scheduleSheet,
-    matches,
-    playerIds,
-    playerNames
-  ).catch((err) => {
+  try {
+    await postSchedule(
+      interaction.client.scheduleSheet,
+      matches,
+      playerIds,
+      playerNames
+    );
+  } catch (err) {
     logger.error(err);
-    interaction.editReply(
+    await interaction.editReply(
       "Failed to save the schedule to Google Sheets (check the logs)"
     );
     return;
-  });
+  }
 
   const sheetsUrl = `https://docs.google.com/spreadsheets/d/${process.env.GOOGLE_SHEET_DOC_ID}`;
   await interaction.editReply(
