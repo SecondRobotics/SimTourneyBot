@@ -16,8 +16,8 @@ export interface Match {
   blueAuto: number;
   redTele: number;
   blueTele: number;
-  redEnd: number; 
-  blueEnd: number;  
+  redEnd: number;
+  blueEnd: number;
   redBonusRP: number;
   blueBonusRP: number;
 }
@@ -37,7 +37,7 @@ export const headerValues = [
   "Red Tele",
   "Blue Tele",
   "Red End",
-  "Blue End", 
+  "Blue End",
   "Red Bonus RP",
   "Blue Bonus RP",
 ];

@@ -78,8 +78,6 @@ export async function getMatchData(
   const redScore = parseInt(redScoreString.trim());
   const blueScore = parseInt(blueScoreString.trim());
 
-
-
   // Calculate total fuel (auto + tele)
   const redTotalFuel = redAutoFuel + redTeleFuel;
   const blueTotalFuel = blueAutoFuel + blueTeleFuel;
@@ -87,7 +85,6 @@ export async function getMatchData(
   // Calculate ranking points
   let redBonusRP = 0;
   let blueBonusRP = 0;
-
 
   // Energized RP - 360+ total fuel
   if (redTotalFuel >= ENERGIZED_RP_THRESHOLD) {
