@@ -85,36 +85,23 @@ export async function getMatchData(
   const blueTotalFuel = blueAutoFuel + blueTeleFuel;
 
   // Calculate ranking points
-  let redRP = 0;
-  let blueRP = 0;
   let redBonusRP = 0;
   let blueBonusRP = 0;
 
-  // Win RP
-  if (redScore > blueScore) redRP += 3;
-  else if (blueScore > redScore) blueRP += 3;
-  else {
-    redRP += 1;
-    blueRP += 1;
-  }
 
   // Energized RP - 360+ total fuel
   if (redTotalFuel >= ENERGIZED_RP_THRESHOLD) {
-    redRP += 1;
     redBonusRP += 1;
   }
   if (blueTotalFuel >= ENERGIZED_RP_THRESHOLD) {
-    blueRP += 1;
     blueBonusRP += 1;
   }
 
   // Supercharged RP - 500+ total fuel
   if (redTotalFuel >= SUPERCHARGED_RP_THRESHOLD) {
-    redRP += 1;
     redBonusRP += 1;
   }
   if (blueTotalFuel >= SUPERCHARGED_RP_THRESHOLD) {
-    blueRP += 1;
     blueBonusRP += 1;
   }
 
@@ -122,11 +109,9 @@ export async function getMatchData(
   const redClimbPoints = redEnd + redAutoLvl1 * AUTO_CLIMB_POINTS;
   const blueClimbPoints = blueEnd + blueAutoLvl1 * AUTO_CLIMB_POINTS;
   if (redClimbPoints >= TRAVERSAL_RP_THRESHOLD) {
-    redRP += 1;
     redBonusRP += 1;
   }
   if (blueClimbPoints >= TRAVERSAL_RP_THRESHOLD) {
-    blueRP += 1;
     blueBonusRP += 1;
   }
 
