@@ -27,6 +27,13 @@ import {
   saveMatchToRow as reefscapeSaveMatchToRow,
 } from "./reefscape";
 
+import {
+  type Match as rebuiltMatch,
+  headerValues as rebuiltHeaderValues,
+  matchToArray as rebuiltMatchToArray,
+  saveMatchToRow as rebuiltSaveMatchToRow,
+} from "./rebuilt";
+
 let gameHeaderValues: string[];
 let gameMatchToArray: (match: never) => (string | number)[];
 let gameSaveMatchToRow: (match: never, row: GoogleSpreadsheetRow) => void;
@@ -48,10 +55,15 @@ switch (process.env.GAME_NAME) {
     gameSaveMatchToRow = crescendoSaveMatchToRow;
     break;
   case "REEFSCAPE":
-  default:
     gameHeaderValues = reefscapeHeaderValues;
     gameMatchToArray = reefscapeMatchToArray;
     gameSaveMatchToRow = reefscapeSaveMatchToRow;
+    break;
+  case "REBUILT":
+  default:
+    gameHeaderValues = rebuiltHeaderValues;
+    gameMatchToArray = rebuiltMatchToArray;
+    gameSaveMatchToRow = rebuiltSaveMatchToRow;
     break;
 }
 
@@ -59,7 +71,8 @@ export type Match =
   | chargedUpMatch
   | crescendoMatch
   | rapidReactMatch
-  | reefscapeMatch;
+  | reefscapeMatch
+  | rebuiltMatch;
 export const headerValues = gameHeaderValues;
 export const matchToArray = (match: Match) => {
   return gameMatchToArray(match as never);

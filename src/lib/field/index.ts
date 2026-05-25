@@ -7,6 +7,7 @@ import { getMatchData as chargedUpGetMatchData } from "./chargedUp";
 import { getMatchData as crescendoGetMatchData } from "./crescendo";
 import { getMatchData as rapidReactGetMatchData } from "./rapidReact";
 import { getMatchData as reefscapeGetMatchData } from "./reefscape";
+import { getMatchData as rebuiltGetMatchData } from "./rebuilt";
 
 export const PLAYOFF_MATCHES_BEFORE_FINALS = 13;
 
@@ -56,8 +57,11 @@ switch (process.env.GAME_NAME) {
     gameGetMatchData = crescendoGetMatchData;
     break;
   case "REEFSCAPE":
-  default:
     gameGetMatchData = reefscapeGetMatchData;
+    break;
+  case "REBUILT":
+  default:
+    gameGetMatchData = rebuiltGetMatchData;
     break;
 }
 
